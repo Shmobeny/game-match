@@ -1,0 +1,198 @@
+.game {
+  display: block;
+  box-sizing: border-box;
+  width: 850px;
+  min-height: 100%;
+  margin: 0 auto;
+  // background-color: rgba(0, 255, 255, 0.1);
+  transform: translateY(100%);
+  opacity: 0;
+
+  &--active {
+    transform: translateY(0%);
+    animation: opacity01 1s ease-in-out 0s 1 normal forwards;
+  }
+
+  &--hide {
+    transform: translateY(0%);
+    animation: opacity10 1s ease-in-out 400ms 1 normal forwards;
+  }
+
+  &__timer {
+    
+    .multiplier {
+      display: inline-block;
+      margin-left: 10px;
+      color: cyan;
+      font-weight: bold;
+      transform: translateY(150%);
+
+      &--animate {
+        animation: showMultiplier 1s ease-in-out 0s 1 normal forwards;
+      }
+    }
+  }
+
+  &__stats {
+    position: fixed;
+    width: 100%;
+    color: #FFC500;
+    font-size: 30px;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    background-color: black;
+    z-index: 9998;
+    overflow: hidden;
+
+    & .container {
+      position: relative;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 850px;
+      margin: 0 auto;
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.9);
+    }
+  }
+
+  &__mainfield {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 75px 0 10px 10px;
+  }
+  
+}
+
+.card {
+  position: relative;
+  box-sizing: border-box;
+  display: block;
+  flex-grow: 0;
+  flex-basis: 23.811%;
+  // max-width: 200px;
+  // max-height: 280px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding-top: 33%;
+  perspective: 500px;
+  transform-origin: center bottom;
+  transition: transform 100ms ease-in-out;
+  opacity: 0;
+
+  &[data-side="back"]:hover {
+    transform: perspective(1000px) rotateX(-9deg);
+    z-index: 4;
+  }
+
+  &--picked {
+    transform: perspective(1000px) scale(1.03);
+    z-index: 5;
+    div {
+      border-color: rgba(0, 255, 255, 0.5);
+    }
+  }
+
+  &--appear {
+    animation: opacity01 500ms ease-in-out 0s 1 normal forwards;
+  }
+  &--disappear {
+    animation: opacity10 500ms ease-in-out 0s 1 normal forwards;
+  }
+
+  &--disabled {
+    //opacity: 0.7 !important;
+    z-index: 3;
+    
+    .card__face::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  &--super {
+    z-index: 6;
+  }
+
+  &__back,
+  &__face {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: inherit;
+    height: 100%;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    backface-visibility: hidden;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    transition: transform 500ms ease-in-out;
+    overflow: hidden;
+    cursor: pointer;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__back {
+    &.rotate {
+      transform: rotateY(180deg);
+    }
+  }
+
+  &__face {
+    transform: rotateY(180deg);
+
+    &.rotate {
+      transform: rotateY(360deg);
+    }
+  }
+}
+
+@media (max-width: 850px) {
+  .game,
+  .game__stats .container {
+    width: 100%;
+  }
+
+  .card {
+    flex-basis: 23.026%;
+  }
+}
+
+@media (max-width: 515px) {
+  .game__stats {
+    font-size: 20px;
+  }
+
+  .game__mainfield {
+    padding-top: 55px;
+  }
+
+  .card {
+    flex-basis: 45%;
+    padding-top: 67%;
+  }
+}
+
+@media (max-width: 352px) {
+  .game__stats {
+    font-size: 15px;
+  }
+
+  .game__mainfield {
+    padding-top: 50px;
+  }
+}

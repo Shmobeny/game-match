@@ -1,0 +1,163 @@
+.intro {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  perspective: 1000px;
+
+  &--hide {
+    animation: hideIntro 5s ease-in-out 0s 1 normal forwards;
+  }
+
+  &__first-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 0 20px;
+    color: aqua;
+    font-size: 26px;
+    cursor: pointer;
+
+    &--hide {
+      animation: opacity10 5s ease-in-out 0s 1 normal forwards;
+    }
+  }
+
+  &__start-alert {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    margin: 20px auto 0;
+    opacity: 1;
+    transition: opacity 400ms ease-in-out;
+
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: 40px;
+      height: 40px;
+      opacity: 0;
+    }
+
+    .loader {
+      &--enabled {
+        animation: loader 2.5s ease-in-out 1s infinite normal forwards;
+      }
+    }
+
+    .click {
+      &--enabled {
+        animation: flicker 8s ease-in-out 0s infinite normal;
+      }
+    }
+
+    .touch {
+      transform: rotate(-45deg) translate(2px, -1px);
+      
+      &--enabled {
+        animation: flicker 8s ease-in-out 4s infinite normal;
+      }
+    }
+  }
+
+  &__logo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0 50px;
+    background-image: url("/!source/img/icons/star-wars-logo.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0;
+    
+    &--animate {
+      opacity: 1;
+      animation: animateLogo 4s linear 1s 1 normal forwards;
+    }
+  }
+
+  &__scroller {
+    display: none;
+    position: absolute;
+    top: 100%;
+    width: 500px;
+    color: #FFC500;
+    text-align: center;
+    transform: rotateX(55deg);
+    animation-name: scrollerMove;
+    animation-duration: 120s;
+    animation-timing-function: linear;
+    animation-delay: 0;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-fill-mode: none;
+
+    h1 {
+      font-size: 55px;
+      text-transform: uppercase;
+    }
+
+    p {
+      font-size: 45px;
+      text-align: justify;
+    }
+  }
+
+  &__skip {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    border-color: black;
+    background-color: black;
+    overflow: hidden;
+    opacity: 0;
+
+    &--show {
+      opacity: 1;
+      animation: opacity01 1s ease-in-out 0s 1 normal forwards;
+    }
+
+    &--hide {
+      animation: opacity10 1s ease-in-out 0s 1 normal forwards;
+    }
+    
+    span {
+      position: absolute;
+      left: 10px;
+      z-index: -1;
+    }
+
+    div {
+      width: 40px;
+      height: 40px;
+      background-color: cyan;
+      background-image: url("/!source/img/interface/skip.svg");
+      background-repeat: no-repeat;
+      background-position: center right;
+
+      animation: skipArrow 1s ease-in-out 0s infinite alternate forwards;
+    }
+
+    &:hover {
+      padding-left: 75px;
+      border-color: cyan;
+    }
+
+    &:hover span {
+      width: auto;
+    }
+  }
+}

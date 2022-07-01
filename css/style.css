@@ -1,0 +1,842 @@
+html,
+body,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+body {
+  color: white;
+  background-color: black;
+}
+
+.skybox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -9999;
+  overflow: hidden;
+}
+.skybox--fixed {
+  position: fixed;
+}
+.skybox__star {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background-color: aliceblue;
+}
+
+.button {
+  margin-bottom: 20px;
+  padding: 5px 20px;
+  text-align: center;
+  text-transform: uppercase;
+  border: 1px solid;
+  border-radius: 5px;
+  font-size: 30px;
+  cursor: pointer;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
+}
+
+@-webkit-keyframes flicker {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@-webkit-keyframes loader {
+  0% {
+    opacity: 0;
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes loader {
+  0% {
+    opacity: 0;
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes skipArrow {
+  from {
+    -webkit-transform: translateX(5px);
+            transform: translateX(5px);
+  }
+  to {
+    -webkit-transform: translateX(0px);
+            transform: translateX(0px);
+  }
+}
+@keyframes skipArrow {
+  from {
+    -webkit-transform: translateX(5px);
+            transform: translateX(5px);
+  }
+  to {
+    -webkit-transform: translateX(0px);
+            transform: translateX(0px);
+  }
+}
+@-webkit-keyframes scrollerMove {
+  0% {
+    -webkit-transform: rotateX(55deg) translateY(0px);
+            transform: rotateX(55deg) translateY(0px);
+  }
+  100% {
+    -webkit-transform: rotateX(55deg) translateY(-10000px);
+            transform: rotateX(55deg) translateY(-10000px);
+  }
+}
+@keyframes scrollerMove {
+  0% {
+    -webkit-transform: rotateX(55deg) translateY(0px);
+            transform: rotateX(55deg) translateY(0px);
+  }
+  100% {
+    -webkit-transform: rotateX(55deg) translateY(-10000px);
+            transform: rotateX(55deg) translateY(-10000px);
+  }
+}
+@-webkit-keyframes hideIntro {
+  from {
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%);
+  }
+  to {
+    -webkit-transform: translateY(-100%);
+            transform: translateY(-100%);
+  }
+}
+@keyframes hideIntro {
+  from {
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%);
+  }
+  to {
+    -webkit-transform: translateY(-100%);
+            transform: translateY(-100%);
+  }
+}
+@-webkit-keyframes animateLogo {
+  from {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  to {
+    -webkit-transform: scale(0.01);
+            transform: scale(0.01);
+  }
+}
+@keyframes animateLogo {
+  from {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  to {
+    -webkit-transform: scale(0.01);
+            transform: scale(0.01);
+  }
+}
+@-webkit-keyframes opacity01 {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes opacity01 {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes opacity10 {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes opacity10 {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@-webkit-keyframes vaderFlicker {
+  from {
+    -webkit-box-shadow: 0px 0px 100px 100px red;
+            box-shadow: 0px 0px 100px 100px red;
+  }
+  to {
+    -webkit-box-shadow: 0px 0px 0px 0px red;
+            box-shadow: 0px 0px 0px 0px red;
+  }
+}
+@keyframes vaderFlicker {
+  from {
+    -webkit-box-shadow: 0px 0px 100px 100px red;
+            box-shadow: 0px 0px 100px 100px red;
+  }
+  to {
+    -webkit-box-shadow: 0px 0px 0px 0px red;
+            box-shadow: 0px 0px 0px 0px red;
+  }
+}
+@-webkit-keyframes colorsOfSwords {
+  from {
+    -webkit-box-shadow: 0px 0px 100px 100px white, 0px 0px 150px 150px blue;
+            box-shadow: 0px 0px 100px 100px white, 0px 0px 150px 150px blue;
+  }
+  to {
+    -webkit-box-shadow: 0px 0px 100px 100px white, 0px 0px 150px 150px green;
+            box-shadow: 0px 0px 100px 100px white, 0px 0px 150px 150px green;
+  }
+}
+@keyframes colorsOfSwords {
+  from {
+    -webkit-box-shadow: 0px 0px 100px 100px white, 0px 0px 150px 150px blue;
+            box-shadow: 0px 0px 100px 100px white, 0px 0px 150px 150px blue;
+  }
+  to {
+    -webkit-box-shadow: 0px 0px 100px 100px white, 0px 0px 150px 150px green;
+            box-shadow: 0px 0px 100px 100px white, 0px 0px 150px 150px green;
+  }
+}
+@-webkit-keyframes showMultiplier {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%);
+  }
+  40% {
+    opacity: 1;
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%);
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translateY(-150%);
+            transform: translateY(-150%);
+  }
+}
+@keyframes showMultiplier {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%);
+  }
+  40% {
+    opacity: 1;
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%);
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translateY(-150%);
+            transform: translateY(-150%);
+  }
+}
+.intro {
+  position: fixed;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  -webkit-perspective: 1000px;
+          perspective: 1000px;
+}
+.intro--hide {
+  -webkit-animation: hideIntro 5s ease-in-out 0s 1 normal forwards;
+          animation: hideIntro 5s ease-in-out 0s 1 normal forwards;
+}
+.intro__first-screen {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0 20px;
+  color: aqua;
+  font-size: 26px;
+  cursor: pointer;
+}
+.intro__first-screen--hide {
+  -webkit-animation: opacity10 5s ease-in-out 0s 1 normal forwards;
+          animation: opacity10 5s ease-in-out 0s 1 normal forwards;
+}
+.intro__start-alert {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin: 20px auto 0;
+  opacity: 1;
+  -webkit-transition: opacity 400ms ease-in-out;
+  transition: opacity 400ms ease-in-out;
+}
+.intro__start-alert img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 40px;
+  height: 40px;
+  opacity: 0;
+}
+.intro__start-alert .loader--enabled {
+  -webkit-animation: loader 2.5s ease-in-out 1s infinite normal forwards;
+          animation: loader 2.5s ease-in-out 1s infinite normal forwards;
+}
+.intro__start-alert .click--enabled {
+  -webkit-animation: flicker 8s ease-in-out 0s infinite normal;
+          animation: flicker 8s ease-in-out 0s infinite normal;
+}
+.intro__start-alert .touch {
+  -webkit-transform: rotate(-45deg) translate(2px, -1px);
+          transform: rotate(-45deg) translate(2px, -1px);
+}
+.intro__start-alert .touch--enabled {
+  -webkit-animation: flicker 8s ease-in-out 4s infinite normal;
+          animation: flicker 8s ease-in-out 4s infinite normal;
+}
+.intro__logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0 50px;
+  background-image: url("/!source/img/icons/star-wars-logo.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0;
+}
+.intro__logo--animate {
+  opacity: 1;
+  -webkit-animation: animateLogo 4s linear 1s 1 normal forwards;
+          animation: animateLogo 4s linear 1s 1 normal forwards;
+}
+.intro__scroller {
+  display: none;
+  position: absolute;
+  top: 100%;
+  width: 500px;
+  color: #FFC500;
+  text-align: center;
+  -webkit-transform: rotateX(55deg);
+          transform: rotateX(55deg);
+  -webkit-animation-name: scrollerMove;
+          animation-name: scrollerMove;
+  -webkit-animation-duration: 120s;
+          animation-duration: 120s;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+  -webkit-animation-delay: 0;
+          animation-delay: 0;
+  -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+  -webkit-animation-direction: normal;
+          animation-direction: normal;
+  -webkit-animation-fill-mode: none;
+          animation-fill-mode: none;
+}
+.intro__scroller h1 {
+  font-size: 55px;
+  text-transform: uppercase;
+}
+.intro__scroller p {
+  font-size: 45px;
+  text-align: justify;
+}
+.intro__skip {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 0;
+  border-color: black;
+  background-color: black;
+  overflow: hidden;
+  opacity: 0;
+}
+.intro__skip--show {
+  opacity: 1;
+  -webkit-animation: opacity01 1s ease-in-out 0s 1 normal forwards;
+          animation: opacity01 1s ease-in-out 0s 1 normal forwards;
+}
+.intro__skip--hide {
+  -webkit-animation: opacity10 1s ease-in-out 0s 1 normal forwards;
+          animation: opacity10 1s ease-in-out 0s 1 normal forwards;
+}
+.intro__skip span {
+  position: absolute;
+  left: 10px;
+  z-index: -1;
+}
+.intro__skip div {
+  width: 40px;
+  height: 40px;
+  background-color: cyan;
+  background-image: url("/!source/img/interface/skip.svg");
+  background-repeat: no-repeat;
+  background-position: center right;
+  -webkit-animation: skipArrow 1s ease-in-out 0s infinite alternate forwards;
+          animation: skipArrow 1s ease-in-out 0s infinite alternate forwards;
+}
+.intro__skip:hover {
+  padding-left: 75px;
+  border-color: cyan;
+}
+.intro__skip:hover span {
+  width: auto;
+}
+
+.game {
+  display: block;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  width: 850px;
+  min-height: 100%;
+  margin: 0 auto;
+  -webkit-transform: translateY(100%);
+          transform: translateY(100%);
+  opacity: 0;
+}
+.game--active {
+  -webkit-transform: translateY(0%);
+          transform: translateY(0%);
+  -webkit-animation: opacity01 1s ease-in-out 0s 1 normal forwards;
+          animation: opacity01 1s ease-in-out 0s 1 normal forwards;
+}
+.game--hide {
+  -webkit-transform: translateY(0%);
+          transform: translateY(0%);
+  -webkit-animation: opacity10 1s ease-in-out 400ms 1 normal forwards;
+          animation: opacity10 1s ease-in-out 400ms 1 normal forwards;
+}
+.game__timer .multiplier {
+  display: inline-block;
+  margin-left: 10px;
+  color: cyan;
+  font-weight: bold;
+  -webkit-transform: translateY(150%);
+          transform: translateY(150%);
+}
+.game__timer .multiplier--animate {
+  -webkit-animation: showMultiplier 1s ease-in-out 0s 1 normal forwards;
+          animation: showMultiplier 1s ease-in-out 0s 1 normal forwards;
+}
+.game__stats {
+  position: fixed;
+  width: 100%;
+  color: #FFC500;
+  font-size: 30px;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  background-color: black;
+  z-index: 9998;
+  overflow: hidden;
+}
+.game__stats .container {
+  position: relative;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 850px;
+  margin: 0 auto;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+.game__mainfield {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  padding: 75px 0 10px 10px;
+}
+
+.card {
+  position: relative;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: block;
+  -webkit-box-flex: 0;
+      -ms-flex-positive: 0;
+          flex-grow: 0;
+  -ms-flex-preferred-size: 23.811%;
+      flex-basis: 23.811%;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding-top: 33%;
+  -webkit-perspective: 500px;
+          perspective: 500px;
+  -webkit-transform-origin: center bottom;
+          transform-origin: center bottom;
+  -webkit-transition: -webkit-transform 100ms ease-in-out;
+  transition: -webkit-transform 100ms ease-in-out;
+  transition: transform 100ms ease-in-out;
+  transition: transform 100ms ease-in-out, -webkit-transform 100ms ease-in-out;
+  opacity: 0;
+}
+.card[data-side=back]:hover {
+  -webkit-transform: perspective(1000px) rotateX(-9deg);
+          transform: perspective(1000px) rotateX(-9deg);
+  z-index: 4;
+}
+.card--picked {
+  -webkit-transform: perspective(1000px) scale(1.03);
+          transform: perspective(1000px) scale(1.03);
+  z-index: 5;
+}
+.card--picked div {
+  border-color: rgba(0, 255, 255, 0.5);
+}
+.card--appear {
+  -webkit-animation: opacity01 500ms ease-in-out 0s 1 normal forwards;
+          animation: opacity01 500ms ease-in-out 0s 1 normal forwards;
+}
+.card--disappear {
+  -webkit-animation: opacity10 500ms ease-in-out 0s 1 normal forwards;
+          animation: opacity10 500ms ease-in-out 0s 1 normal forwards;
+}
+.card--disabled {
+  z-index: 3;
+}
+.card--disabled .card__face::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.card--super {
+  z-index: 6;
+}
+.card__back, .card__face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: inherit;
+  height: 100%;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 10px;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  -webkit-transition: -webkit-transform 500ms ease-in-out;
+  transition: -webkit-transform 500ms ease-in-out;
+  transition: transform 500ms ease-in-out;
+  transition: transform 500ms ease-in-out, -webkit-transform 500ms ease-in-out;
+  overflow: hidden;
+  cursor: pointer;
+}
+.card__back img, .card__face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.card__back.rotate {
+  -webkit-transform: rotateY(180deg);
+          transform: rotateY(180deg);
+}
+.card__face {
+  -webkit-transform: rotateY(180deg);
+          transform: rotateY(180deg);
+}
+.card__face.rotate {
+  -webkit-transform: rotateY(360deg);
+          transform: rotateY(360deg);
+}
+
+@media (max-width: 850px) {
+  .game,
+.game__stats .container {
+    width: 100%;
+  }
+
+  .card {
+    -ms-flex-preferred-size: 23.026%;
+        flex-basis: 23.026%;
+  }
+}
+@media (max-width: 515px) {
+  .game__stats {
+    font-size: 20px;
+  }
+
+  .game__mainfield {
+    padding-top: 55px;
+  }
+
+  .card {
+    -ms-flex-preferred-size: 45%;
+        flex-basis: 45%;
+    padding-top: 67%;
+  }
+}
+@media (max-width: 352px) {
+  .game__stats {
+    font-size: 15px;
+  }
+
+  .game__mainfield {
+    padding-top: 50px;
+  }
+}
+.messages-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-transform: translateX(-100%);
+          transform: translateX(-100%);
+}
+.messages-container--active {
+  -webkit-transform: translateX(0%);
+          transform: translateX(0%);
+}
+
+.message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  color: white;
+  font-size: 30px;
+  background-color: black;
+  -webkit-transition: opacity 1.5s ease-in-out;
+  transition: opacity 1.5s ease-in-out;
+  -webkit-transform: translateX(-100%);
+          transform: translateX(-100%);
+  opacity: 0;
+}
+.message--active {
+  -webkit-transform: translateX(0%);
+          transform: translateX(0%);
+  opacity: 1;
+}
+.message--hiding {
+  opacity: 0;
+}
+.message__logo {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 400px;
+  height: 400px;
+}
+.message__logo .logo {
+  z-index: 9;
+}
+.message__logo .logo__shadow {
+  display: none;
+  width: 0px;
+  height: 0px;
+  border-radius: 50%;
+}
+.message__logo .logo__shadow--lose {
+  display: block;
+  -webkit-animation: vaderFlicker 2.7s ease-in-out 0s infinite alternate none;
+          animation: vaderFlicker 2.7s ease-in-out 0s infinite alternate none;
+}
+.message__logo .logo__shadow--victory {
+  display: block;
+  -webkit-animation: colorsOfSwords 3s ease-in-out 0s infinite alternate none;
+          animation: colorsOfSwords 3s ease-in-out 0s infinite alternate none;
+}
+.message__logo .logo__content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.message__logo .logo__content--lose {
+  background-image: url("/!source/img/interface/darth-vader.svg");
+}
+.message__logo .logo__content--victory {
+  background-image: url("/!source/img/interface/rabels.svg");
+}
+.message__text {
+  margin-bottom: 20px;
+  padding: 0 5px;
+  text-align: center;
+  text-shadow: 5px 5px 5px black;
+  z-index: 10;
+}
+.message__buttons-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.message__button {
+  text-transform: uppercase;
+  margin: 5px;
+  padding: 5px 20px;
+  border: 1px solid;
+  border-radius: 5px;
+  cursor: pointer;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
+}
+.message__button--lose:hover {
+  color: black;
+  background-color: red;
+}
+.message__button--victory:hover {
+  color: #FFC500;
+  border-color: #FFC500;
+}
+.message__button--disabled {
+  opacity: 0.5;
+}
+.message__button--disabled:hover {
+  color: white;
+  background-color: black;
+  cursor: not-allowed;
+}
+
+@media (max-width: 505px) {
+  .message__buttons-container {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+  }
+}

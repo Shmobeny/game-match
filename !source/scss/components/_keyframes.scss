@@ -1,0 +1,145 @@
+@keyframes flicker {
+  0% {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  75% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes loader {
+  0% {
+    opacity: 0;
+    transform: rotate(0deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: rotate(180deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes skipArrow {
+  from {
+    transform: translateX(5px);
+  } 
+  
+  to {
+    transform: translateX(0px);
+  }
+}
+
+@keyframes scrollerMove {
+  0% {
+    transform: rotateX(55deg) translateY(0px);
+
+  }
+
+  100% {
+    transform: rotateX(55deg) translateY(-10000px);
+  }
+}
+
+@keyframes hideIntro {
+  from {
+    transform: translateY(0%);
+  }
+
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes animateLogo {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(0.01);
+  }
+}
+
+@keyframes opacity01 {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes opacity10 {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vaderFlicker {
+  from {
+    box-shadow: 0px 0px 100px 100px red;
+  }
+
+  to {
+    box-shadow: 0px 0px 0px 0px red;
+  }
+}
+
+@keyframes colorsOfSwords {
+  from {
+    box-shadow:
+      0px 0px 100px 100px white,
+      0px 0px 150px 150px blue;
+  }
+
+  to {
+    box-shadow:
+      0px 0px 100px 100px white,
+      0px 0px 150px 150px green;
+  }
+}
+
+@keyframes showMultiplier {
+  0% {
+    opacity: 0;
+    transform: translateY(0%);
+  }
+
+  // 20% {
+  //   opacity: 1;
+  //   transform: translateY(0%);
+  // }
+
+  40% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-150%);
+  }
+}

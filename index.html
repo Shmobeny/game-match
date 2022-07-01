@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Start Wars: Match Game</title>
+</head>
+<body>
+  <!-- Intro -->
+<div data-original-class="intro" class="intro">
+  <div class="skybox"></div>
+  <div data-original-class="intro__first-screen" class="intro__first-screen">
+    <p class="intro__long-ago-text">A long time ago, in a galaxy far,<br> far away....</p>
+    <div class="intro__start-alert">
+      <img class="loader loader--enabled" src="/!source/img/interface/wait-loader.svg" alt="loading-status">
+      <img class="click" src="/!source/img/interface/start-click.svg" alt="start-button">
+      <img class="touch" src="/!source/img/interface/start-touch.svg" alt="start-button">
+    </div>
+  </div>
+
+  <div data-original-class="intro__logo" class="intro__logo">
+    <!-- <img src="/!source/img/icons/star-wars-logo.svg" alt="Start Wars Logo"> -->
+  </div>
+
+  <div class="intro__scroller">
+    <h1 class="intro__title">A Mix and Match Game</h1>
+    <p class="intro__text">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate odit iure reprehenderit molestias fugit quas optio labore, reiciendis ipsum vel excepturi eveniet, vero soluta nostrum molestiae? Perferendis vitae quod eaque?
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate odit iure reprehenderit molestias fugit quas optio labore, reiciendis ipsum vel excepturi eveniet, vero soluta nostrum molestiae? Perferendis vitae quod eaque?
+    </p>
+  </div>
+
+  <div data-original-class="button intro__skip" class="button intro__skip"><span>Skip</span><div></div></div>
+</div>
+  <!-- Game -->
+<div data-is-active="false" data-time-left="pending" data-unmatched-cards="pending" data-original-class="game" class="game">
+  <div data-original-class="skybox" class="skybox"></div>
+  <div data-original-class="game__stats" class="game__stats">
+    <div class="container">
+      <span class="game__timer">Time left: <span data-counter="timer">--</span><span class="multiplier">+<span data-counter="bonus">5</span></span></span>
+      <span class="game__counter">Cards left: <span data-counter="cards">--</span></span>
+    </div>
+  </div>
+
+  <div class="game__mainfield">
+    
+    <!-- Generate cards here -->
+
+  </div>
+  
+</div>
+  <!-- End Game -->
+<div data-is-active="false" data-game-result="pending" data-lives="pending" data-original-class="messages-container" class="messages-container">
+<div data-original-class="message message--lose" class="message message--lose">
+  <div class="message__logo logo">
+    <div data-original-class="logo__shadow" class="logo__shadow"></div>
+    <div class="logo__content logo__content--lose"></div>
+  </div>
+  <p class="message__text">You lose! Empire takes over the Galaxy!</p>
+  <div class="message__buttons-container">
+    <div data-role="continue" data-original-class="button message__button message__button--lose" class="button message__button message__button--lose">Continue (<span data-counter="lives">--</span>)</div>
+    <div data-role="restart" class="button message__button message__button--lose">New Game</div>
+  </div>
+</div>
+
+<div data-original-class="message message--victory" class="message message--victory">
+  <div class="message__logo logo">
+    <div data-original-class="logo__shadow" class="logo__shadow"></div>
+    <div class="logo__content logo__content--victory"></div>
+  </div>
+  <p class="message__text">You won! Empire fell!<br>May the force be with you</p>
+  <div data-role="restart" class="button message__button message__button--victory">Play once again</div>
+</div>
+</div>  
+  <script src="js/script.js"></script>
+</body>
+</html>
