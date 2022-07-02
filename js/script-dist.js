@@ -3797,50 +3797,50 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 var charsArr = Object.entries({
-  "ackbar": "/img/cards/ackbar.png",
-  "amidala": "/img/cards/amidala.png",
-  "bb8": "/img/cards/bb8.png",
-  "ben_kenobi": "/img/cards/ben_kenobi.png",
-  "ben_solo": "/img/cards/ben_solo.png",
-  "binks": "/img/cards/binks.png",
-  "boba_fett": "/img/cards/boba_fett.png",
-  "c3po": "/img/cards/c3po.png",
-  "chewbacca": "/img/cards/chewbacca.png",
-  "darth_maul_alt": "/img/cards/darth_maul_alt.png",
-  "darth_maul": "/img/cards/darth_maul.png",
-  "droid": "/img/cards/droid.png",
-  "grievous": "/img/cards/grievous.png",
-  "gunray": "/img/cards/gunray.png",
-  "jabba": "/img/cards/jabba.png",
-  "jango": "/img/cards/jango.png",
-  "kylo": "/img/cards/kylo.png",
-  "lando": "/img/cards/lando.png",
-  "leia": "/img/cards/leia.png",
-  "mandalorian": "/img/cards/mandalorian.png",
-  "nunb": "/img/cards/nunb.png",
-  "obiwan_kenobi": "/img/cards/obiwan_kenobi.png",
-  "old_luke": "/img/cards/old_luke.png",
-  "palpatine": "/img/cards/palpatine.png",
-  "phasma": "/img/cards/phasma.png",
-  "pilot": "/img/cards/pilot.png",
-  "quigon_jinn": "/img/cards/quigon_jinn.png",
-  "r2d2": "/img/cards/r2d2.png",
-  "rey": "/img/cards/rey.png",
-  "rune": "/img/cards/rune.png",
-  "scout": "/img/cards/scout.png",
-  "sidious": "/img/cards/sidious.png",
-  "solo": "/img/cards/solo.png",
-  "stormtrooper": "/img/cards/stormtrooper.png",
-  "trooper": "/img/cards/trooper.png",
-  "tusken_raider": "/img/cards/tusken_raider.png",
-  "vader": "/img/cards/vader.png",
-  "war_padme": "/img/cards/war_padme.png",
-  "warrick": "/img/cards/warrick.png",
-  "watto": "/img/cards/watto.png",
-  "windu": "/img/cards/windu.png",
-  "yoda": "/img/cards/yoda.png",
-  "young_anakin": "/img/cards/young_anakin.png",
-  "young_luke": "/img/cards/young_luke.png"
+  "ackbar": "./img/cards/ackbar.png",
+  "amidala": "./img/cards/amidala.png",
+  "bb8": "./img/cards/bb8.png",
+  "ben_kenobi": "./img/cards/ben_kenobi.png",
+  "ben_solo": "./img/cards/ben_solo.png",
+  "binks": "./img/cards/binks.png",
+  "boba_fett": "./img/cards/boba_fett.png",
+  "c3po": "./img/cards/c3po.png",
+  "chewbacca": "./img/cards/chewbacca.png",
+  "darth_maul_alt": "./img/cards/darth_maul_alt.png",
+  "darth_maul": "./img/cards/darth_maul.png",
+  "droid": "./img/cards/droid.png",
+  "grievous": "./img/cards/grievous.png",
+  "gunray": "./img/cards/gunray.png",
+  "jabba": "./img/cards/jabba.png",
+  "jango": "./img/cards/jango.png",
+  "kylo": "./img/cards/kylo.png",
+  "lando": "./img/cards/lando.png",
+  "leia": "./img/cards/leia.png",
+  "mandalorian": "./img/cards/mandalorian.png",
+  "nunb": "./img/cards/nunb.png",
+  "obiwan_kenobi": "./img/cards/obiwan_kenobi.png",
+  "old_luke": "./img/cards/old_luke.png",
+  "palpatine": "./img/cards/palpatine.png",
+  "phasma": "./img/cards/phasma.png",
+  "pilot": "./img/cards/pilot.png",
+  "quigon_jinn": "./img/cards/quigon_jinn.png",
+  "r2d2": "./img/cards/r2d2.png",
+  "rey": "./img/cards/rey.png",
+  "rune": "./img/cards/rune.png",
+  "scout": "./img/cards/scout.png",
+  "sidious": "./img/cards/sidious.png",
+  "solo": "./img/cards/solo.png",
+  "stormtrooper": "./img/cards/stormtrooper.png",
+  "trooper": "./img/cards/trooper.png",
+  "tusken_raider": "./img/cards/tusken_raider.png",
+  "vader": "./img/cards/vader.png",
+  "war_padme": "./img/cards/war_padme.png",
+  "warrick": "./img/cards/warrick.png",
+  "watto": "./img/cards/watto.png",
+  "windu": "./img/cards/windu.png",
+  "yoda": "./img/cards/yoda.png",
+  "young_anakin": "./img/cards/young_anakin.png",
+  "young_luke": "./img/cards/young_luke.png"
 }); // shuffle(charsArr);
 // function getRandomInt(min, max) {
 //   min = Math.ceil(min);
@@ -4022,7 +4022,7 @@ var Game = /*#__PURE__*/function () {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var char = _step.value;
           var backface = document.createElement("img");
-          backface.src = "/img/cards/card_back.png";
+          backface.src = "./img/cards/card_back.png";
           var imgPreload = document.createElement("img");
           imgPreload.src = char[1];
           var cardBody = createCard(char, "card");
@@ -4123,20 +4123,20 @@ var AudioController = /*#__PURE__*/function () {
     this.game = new Audio("data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
     this.lose = new Audio("data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
     this.win = new Audio("data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
-    this.introSRC = "/sound/star-wars-main-theme-song.mp3";
-    this.gameSRC = "/sound/duel-of-the-fates.mp3";
-    this.loseSRC = "/sound/darth-vader-breathing-alt.mp3";
-    this.winSRC = "/sound/the-throne-room.mp3";
+    this.introSRC = "./sound/star-wars-main-theme-song.mp3";
+    this.gameSRC = "./sound/duel-of-the-fates.mp3";
+    this.loseSRC = "./sound/darth-vader-breathing-alt.mp3";
+    this.winSRC = "./sound/the-throne-room.mp3";
     this.intro.autoplay = true;
     this.game.autoplay = true;
     this.lose.autoplay = true;
     this.win.autoplay = true;
     this.click = [1, //iterator
-    new Audio("/sound/ls-on-1.mp3"), new Audio("/sound/ls-on-2.mp3"), new Audio("/sound/ls-on-3.mp3")];
+    new Audio("./sound/ls-on-1.mp3"), new Audio("./sound/ls-on-2.mp3"), new Audio("./sound/ls-on-3.mp3")];
     this.matched = [1, //iterator
-    new Audio("/sound/hit-1.mp3"), new Audio("/sound/hit-2.mp3"), new Audio("/sound/hit-3.mp3")];
+    new Audio("./sound/hit-1.mp3"), new Audio("./sound/hit-2.mp3"), new Audio("./sound/hit-3.mp3")];
     this.unmatched = [1, //iterator
-    new Audio("/sound/mis-1.mp3"), new Audio("/sound/mis-2.mp3")];
+    new Audio("./sound/mis-1.mp3"), new Audio("./sound/mis-2.mp3")];
 
     for (var _i2 = 0, _arr = [this.click, this.matched, this.unmatched]; _i2 < _arr.length; _i2++) {
       var item = _arr[_i2];
