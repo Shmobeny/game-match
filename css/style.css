@@ -393,7 +393,7 @@ body {
   width: 100%;
   height: 100%;
   margin: 0 50px;
-  background-image: url("../img/icons/star-wars-logo.svg");
+  background-image: url("../img/logos/star-wars-logo.svg");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -788,10 +788,10 @@ body {
   background-size: contain;
 }
 .message__logo .logo__content--lose {
-  background-image: url("../img/interface/darth-vader.svg");
+  background-image: url("../img/logos/darth-vader.svg");
 }
 .message__logo .logo__content--victory {
-  background-image: url("../img/interface/rabels.svg");
+  background-image: url("../img/logos/rabels.svg");
 }
 .message__text {
   margin-bottom: 20px;
