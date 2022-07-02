@@ -85,11 +85,11 @@
         background-size: contain;
 
         &--lose {
-          background-image: url("/img/interface/darth-vader.svg");
+          background-image: url("../img/interface/darth-vader.svg");
         }
 
         &--victory {
-          background-image: url("/img/interface/rabels.svg");
+          background-image: url("../img/interface/rabels.svg");
         }
       }
     }
