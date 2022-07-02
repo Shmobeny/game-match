@@ -2246,9 +2246,114 @@ module.exports = function (argument) {
 /* 96 */
 /***/ (function(__unused_webpack_module, __unused_webpack_exports, __webpack_require__) {
 
+"use strict";
+
+var $ = __webpack_require__(2);
+var global = __webpack_require__(3);
+var isArray = __webpack_require__(97);
+var isConstructor = __webpack_require__(75);
+var isObject = __webpack_require__(18);
+var toAbsoluteIndex = __webpack_require__(58);
+var lengthOfArrayLike = __webpack_require__(61);
+var toIndexedObject = __webpack_require__(11);
+var createProperty = __webpack_require__(78);
+var wellKnownSymbol = __webpack_require__(31);
+var arrayMethodHasSpeciesSupport = __webpack_require__(98);
+var un$Slice = __webpack_require__(99);
+
+var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('slice');
+
+var SPECIES = wellKnownSymbol('species');
+var Array = global.Array;
+var max = Math.max;
+
+// `Array.prototype.slice` method
+// https://tc39.es/ecma262/#sec-array.prototype.slice
+// fallback for not array-like ES3 strings and DOM objects
+$({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT }, {
+  slice: function slice(start, end) {
+    var O = toIndexedObject(this);
+    var length = lengthOfArrayLike(O);
+    var k = toAbsoluteIndex(start, length);
+    var fin = toAbsoluteIndex(end === undefined ? length : end, length);
+    // inline `ArraySpeciesCreate` for usage native `Array#slice` where it's possible
+    var Constructor, result, n;
+    if (isArray(O)) {
+      Constructor = O.constructor;
+      // cross-realm fallback
+      if (isConstructor(Constructor) && (Constructor === Array || isArray(Constructor.prototype))) {
+        Constructor = undefined;
+      } else if (isObject(Constructor)) {
+        Constructor = Constructor[SPECIES];
+        if (Constructor === null) Constructor = undefined;
+      }
+      if (Constructor === Array || Constructor === undefined) {
+        return un$Slice(O, k, fin);
+      }
+    }
+    result = new (Constructor === undefined ? Array : Constructor)(max(fin - k, 0));
+    for (n = 0; k < fin; k++, n++) if (k in O) createProperty(result, n, O[k]);
+    result.length = n;
+    return result;
+  }
+});
+
+
+/***/ }),
+/* 97 */
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+var classof = __webpack_require__(14);
+
+// `IsArray` abstract operation
+// https://tc39.es/ecma262/#sec-isarray
+// eslint-disable-next-line es-x/no-array-isarray -- safe
+module.exports = Array.isArray || function isArray(argument) {
+  return classof(argument) == 'Array';
+};
+
+
+/***/ }),
+/* 98 */
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+var fails = __webpack_require__(6);
+var wellKnownSymbol = __webpack_require__(31);
+var V8_VERSION = __webpack_require__(25);
+
+var SPECIES = wellKnownSymbol('species');
+
+module.exports = function (METHOD_NAME) {
+  // We can't use this feature detection in V8 since it causes
+  // deoptimization and serious performance degradation
+  // https://github.com/zloirock/core-js/issues/677
+  return V8_VERSION >= 51 || !fails(function () {
+    var array = [];
+    var constructor = array.constructor = {};
+    constructor[SPECIES] = function () {
+      return { foo: 1 };
+    };
+    return array[METHOD_NAME](Boolean).foo !== 1;
+  });
+};
+
+
+/***/ }),
+/* 99 */
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+var uncurryThis = __webpack_require__(13);
+
+module.exports = uncurryThis([].slice);
+
+
+/***/ }),
+/* 100 */
+/***/ (function(__unused_webpack_module, __unused_webpack_exports, __webpack_require__) {
+
 var TO_STRING_TAG_SUPPORT = __webpack_require__(77);
 var defineBuiltIn = __webpack_require__(45);
-var toString = __webpack_require__(97);
+var toString = __webpack_require__(101);
 
 // `Object.prototype.toString` method
 // https://tc39.es/ecma262/#sec-object.prototype.tostring
@@ -2258,7 +2363,7 @@ if (!TO_STRING_TAG_SUPPORT) {
 
 
 /***/ }),
-/* 97 */
+/* 101 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
@@ -2274,13 +2379,13 @@ module.exports = TO_STRING_TAG_SUPPORT ? {}.toString : function toString() {
 
 
 /***/ }),
-/* 98 */
+/* 102 */
 /***/ (function(__unused_webpack_module, __unused_webpack_exports, __webpack_require__) {
 
 var global = __webpack_require__(3);
-var DOMIterables = __webpack_require__(99);
-var DOMTokenListPrototype = __webpack_require__(100);
-var forEach = __webpack_require__(101);
+var DOMIterables = __webpack_require__(103);
+var DOMTokenListPrototype = __webpack_require__(104);
+var forEach = __webpack_require__(105);
 var createNonEnumerableProperty = __webpack_require__(41);
 
 var handlePrototype = function (CollectionPrototype) {
@@ -2302,7 +2407,7 @@ handlePrototype(DOMTokenListPrototype);
 
 
 /***/ }),
-/* 99 */
+/* 103 */
 /***/ (function(module) {
 
 // iterable DOM collections
@@ -2343,7 +2448,7 @@ module.exports = {
 
 
 /***/ }),
-/* 100 */
+/* 104 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 // in old WebKit versions, `element.classList` is not an instance of global `DOMTokenList`
@@ -2356,13 +2461,13 @@ module.exports = DOMTokenListPrototype === Object.prototype ? undefined : DOMTok
 
 
 /***/ }),
-/* 101 */
+/* 105 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
 
-var $forEach = (__webpack_require__(102).forEach);
-var arrayMethodIsStrict = __webpack_require__(106);
+var $forEach = (__webpack_require__(106).forEach);
+var arrayMethodIsStrict = __webpack_require__(109);
 
 var STRICT_METHOD = arrayMethodIsStrict('forEach');
 
@@ -2375,7 +2480,7 @@ module.exports = !STRICT_METHOD ? function forEach(callbackfn /* , thisArg */) {
 
 
 /***/ }),
-/* 102 */
+/* 106 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 var bind = __webpack_require__(70);
@@ -2383,7 +2488,7 @@ var uncurryThis = __webpack_require__(13);
 var IndexedObject = __webpack_require__(12);
 var toObject = __webpack_require__(37);
 var lengthOfArrayLike = __webpack_require__(61);
-var arraySpeciesCreate = __webpack_require__(103);
+var arraySpeciesCreate = __webpack_require__(107);
 
 var push = uncurryThis([].push);
 
@@ -2454,10 +2559,10 @@ module.exports = {
 
 
 /***/ }),
-/* 103 */
+/* 107 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-var arraySpeciesConstructor = __webpack_require__(104);
+var arraySpeciesConstructor = __webpack_require__(108);
 
 // `ArraySpeciesCreate` abstract operation
 // https://tc39.es/ecma262/#sec-arrayspeciescreate
@@ -2467,11 +2572,11 @@ module.exports = function (originalArray, length) {
 
 
 /***/ }),
-/* 104 */
+/* 108 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 var global = __webpack_require__(3);
-var isArray = __webpack_require__(105);
+var isArray = __webpack_require__(97);
 var isConstructor = __webpack_require__(75);
 var isObject = __webpack_require__(18);
 var wellKnownSymbol = __webpack_require__(31);
@@ -2496,21 +2601,7 @@ module.exports = function (originalArray) {
 
 
 /***/ }),
-/* 105 */
-/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
-
-var classof = __webpack_require__(14);
-
-// `IsArray` abstract operation
-// https://tc39.es/ecma262/#sec-isarray
-// eslint-disable-next-line es-x/no-array-isarray -- safe
-module.exports = Array.isArray || function isArray(argument) {
-  return classof(argument) == 'Array';
-};
-
-
-/***/ }),
-/* 106 */
+/* 109 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
@@ -2524,97 +2615,6 @@ module.exports = function (METHOD_NAME, argument) {
     method.call(null, argument || function () { return 1; }, 1);
   });
 };
-
-
-/***/ }),
-/* 107 */
-/***/ (function(__unused_webpack_module, __unused_webpack_exports, __webpack_require__) {
-
-"use strict";
-
-var $ = __webpack_require__(2);
-var global = __webpack_require__(3);
-var isArray = __webpack_require__(105);
-var isConstructor = __webpack_require__(75);
-var isObject = __webpack_require__(18);
-var toAbsoluteIndex = __webpack_require__(58);
-var lengthOfArrayLike = __webpack_require__(61);
-var toIndexedObject = __webpack_require__(11);
-var createProperty = __webpack_require__(78);
-var wellKnownSymbol = __webpack_require__(31);
-var arrayMethodHasSpeciesSupport = __webpack_require__(108);
-var un$Slice = __webpack_require__(109);
-
-var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('slice');
-
-var SPECIES = wellKnownSymbol('species');
-var Array = global.Array;
-var max = Math.max;
-
-// `Array.prototype.slice` method
-// https://tc39.es/ecma262/#sec-array.prototype.slice
-// fallback for not array-like ES3 strings and DOM objects
-$({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT }, {
-  slice: function slice(start, end) {
-    var O = toIndexedObject(this);
-    var length = lengthOfArrayLike(O);
-    var k = toAbsoluteIndex(start, length);
-    var fin = toAbsoluteIndex(end === undefined ? length : end, length);
-    // inline `ArraySpeciesCreate` for usage native `Array#slice` where it's possible
-    var Constructor, result, n;
-    if (isArray(O)) {
-      Constructor = O.constructor;
-      // cross-realm fallback
-      if (isConstructor(Constructor) && (Constructor === Array || isArray(Constructor.prototype))) {
-        Constructor = undefined;
-      } else if (isObject(Constructor)) {
-        Constructor = Constructor[SPECIES];
-        if (Constructor === null) Constructor = undefined;
-      }
-      if (Constructor === Array || Constructor === undefined) {
-        return un$Slice(O, k, fin);
-      }
-    }
-    result = new (Constructor === undefined ? Array : Constructor)(max(fin - k, 0));
-    for (n = 0; k < fin; k++, n++) if (k in O) createProperty(result, n, O[k]);
-    result.length = n;
-    return result;
-  }
-});
-
-
-/***/ }),
-/* 108 */
-/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
-
-var fails = __webpack_require__(6);
-var wellKnownSymbol = __webpack_require__(31);
-var V8_VERSION = __webpack_require__(25);
-
-var SPECIES = wellKnownSymbol('species');
-
-module.exports = function (METHOD_NAME) {
-  // We can't use this feature detection in V8 since it causes
-  // deoptimization and serious performance degradation
-  // https://github.com/zloirock/core-js/issues/677
-  return V8_VERSION >= 51 || !fails(function () {
-    var array = [];
-    var constructor = array.constructor = {};
-    constructor[SPECIES] = function () {
-      return { foo: 1 };
-    };
-    return array[METHOD_NAME](Boolean).foo !== 1;
-  });
-};
-
-
-/***/ }),
-/* 109 */
-/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
-
-var uncurryThis = __webpack_require__(13);
-
-module.exports = uncurryThis([].slice);
 
 
 /***/ }),
@@ -2934,7 +2934,7 @@ var defineWellKnownSymbol = __webpack_require__(122);
 var defineSymbolToPrimitive = __webpack_require__(124);
 var setToStringTag = __webpack_require__(93);
 var InternalStateModule = __webpack_require__(49);
-var $forEach = (__webpack_require__(102).forEach);
+var $forEach = (__webpack_require__(106).forEach);
 
 var HIDDEN = sharedKey('hidden');
 var SYMBOL = 'Symbol';
@@ -3336,11 +3336,11 @@ var apply = __webpack_require__(129);
 var call = __webpack_require__(7);
 var uncurryThis = __webpack_require__(13);
 var fails = __webpack_require__(6);
-var isArray = __webpack_require__(105);
+var isArray = __webpack_require__(97);
 var isCallable = __webpack_require__(19);
 var isObject = __webpack_require__(18);
 var isSymbol = __webpack_require__(20);
-var arraySlice = __webpack_require__(109);
+var arraySlice = __webpack_require__(99);
 var NATIVE_SYMBOL = __webpack_require__(24);
 
 var $stringify = getBuiltIn('JSON', 'stringify');
@@ -3620,8 +3620,8 @@ module.exports = function (key) {
 /***/ (function(__unused_webpack_module, __unused_webpack_exports, __webpack_require__) {
 
 var global = __webpack_require__(3);
-var DOMIterables = __webpack_require__(99);
-var DOMTokenListPrototype = __webpack_require__(100);
+var DOMIterables = __webpack_require__(103);
+var DOMTokenListPrototype = __webpack_require__(104);
 var ArrayIteratorMethods = __webpack_require__(133);
 var createNonEnumerableProperty = __webpack_require__(41);
 var wellKnownSymbol = __webpack_require__(31);
@@ -3751,12 +3751,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es_array_from_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_from_js__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(82);
 /* harmony import */ var core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(96);
-/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(98);
-/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(107);
-/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(96);
+/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(100);
+/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(102);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(110);
 /* harmony import */ var core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(111);
@@ -3796,73 +3796,70 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
-// let charsArr = Object.entries({
-//   "ackbar": "!source/img/cards/ackbar.png",
-//   "amidala": "!source/img/cards/amidala.png",
-//   "bb8": "!source/img/cards/bb8.png",
-//   "ben_solo": "!source/img/cards/ben_solo.png",
-//   "binks": "!source/img/cards/binks.png",
-//   "boba_fett": "!source/img/cards/boba_fett.png",
-//   "darth_maul": "!source/img/cards/darth_maul.png",
-//   "grievous": "!source/img/cards/grievous.png",
-//   "gunray": "!source/img/cards/gunray.png",
-//   "jango": "!source/img/cards/jango.png",
-//   "kylo": "!source/img/cards/kylo.png",
-//   "leia": "!source/img/cards/leia.png",
-//   "mandalorian": "!source/img/cards/mandalorian.png",
-//   "obiwan_kenobi": "!source/img/cards/obiwan_kenobi.png",
-//   "palpatine": "!source/img/cards/palpatine.png",
-//   "phasma": "!source/img/cards/phasma.png",
-//   "pilot": "!source/img/cards/pilot.png",
-//   "quigon_jinn": "!source/img/cards/quigon_jinn.png",
-//   "r2d2": "!source/img/cards/r2d2.png",
-//   "scout": "!source/img/cards/scout.png",
-//   "sidious": "!source/img/cards/sidious.png",
-//   "solo": "!source/img/cards/solo.png",
-//   "stormtrooper": "!source/img/cards/stormtrooper.png",
-//   "trooper": "!source/img/cards/trooper.png",
-//   "tusken_raider": "!source/img/cards/tusken_raider.png",
-//   "vader": "!source/img/cards/vader.png",
-//   "warrick": "!source/img/cards/warrick.png",
-//   "watto": "!source/img/cards/watto.png",
-//   "windu": "!source/img/cards/windu.png",
-//   "yoda": "!source/img/cards/yoda.png"
-// });
 var charsArr = Object.entries({
-  "boba_fett": "!source/img/cards/boba_fett.png",
-  "leia": "!source/img/cards/leia.png",
-  "stormtrooper": "!source/img/cards/stormtrooper.png",
-  "solo": "!source/img/cards/solo.png",
-  "vader": "!source/img/cards/vader.png",
-  "sidious": "!source/img/cards/sidious.png",
-  "tusken_raider": "!source/img/cards/tusken_raider.png",
-  "warrick": "!source/img/cards/warrick.png",
-  "r2d2": "!source/img/cards/r2d2.png",
-  "pilot": "!source/img/cards/pilot.png",
-  "scout": "!source/img/cards/scout.png",
-  "yoda": "!source/img/cards/yoda.png"
-});
-shuffle(charsArr);
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
-function shuffle(array) {
-  for (var i = array.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var _ref = [array[j], array[i]];
-    array[i] = _ref[0];
-    array[j] = _ref[1];
-  }
-}
+  "ackbar": "../!source/img/cards/ackbar.png",
+  "amidala": "../!source/img/cards/amidala.png",
+  "bb8": "../!source/img/cards/bb8.png",
+  "ben_kenobi": "../!source/img/cards/ben_kenobi.png",
+  "ben_solo": "../!source/img/cards/ben_solo.png",
+  "binks": "../!source/img/cards/binks.png",
+  "boba_fett": "../!source/img/cards/boba_fett.png",
+  "c3po": "../!source/img/cards/c3po.png",
+  "chewbacca": "../!source/img/cards/chewbacca.png",
+  "darth_maul_alt": "../!source/img/cards/darth_maul_alt.png",
+  "darth_maul": "../!source/img/cards/darth_maul.png",
+  "droid": "../!source/img/cards/droid.png",
+  "grievous": "../!source/img/cards/grievous.png",
+  "gunray": "../!source/img/cards/gunray.png",
+  "jabba": "../!source/img/cards/jabba.png",
+  "jango": "../!source/img/cards/jango.png",
+  "kylo": "../!source/img/cards/kylo.png",
+  "lando": "../!source/img/cards/lando.png",
+  "leia": "../!source/img/cards/leia.png",
+  "mandalorian": "../!source/img/cards/mandalorian.png",
+  "nunb": "../!source/img/cards/nunb.png",
+  "obiwan_kenobi": "../!source/img/cards/obiwan_kenobi.png",
+  "old_luke": "../!source/img/cards/old_luke.png",
+  "palpatine": "../!source/img/cards/palpatine.png",
+  "phasma": "../!source/img/cards/phasma.png",
+  "pilot": "../!source/img/cards/pilot.png",
+  "quigon_jinn": "../!source/img/cards/quigon_jinn.png",
+  "r2d2": "../!source/img/cards/r2d2.png",
+  "rey": "../!source/img/cards/rey.png",
+  "rune": "../!source/img/cards/rune.png",
+  "scout": "../!source/img/cards/scout.png",
+  "sidious": "../!source/img/cards/sidious.png",
+  "solo": "../!source/img/cards/solo.png",
+  "stormtrooper": "../!source/img/cards/stormtrooper.png",
+  "trooper": "../!source/img/cards/trooper.png",
+  "tusken_raider": "../!source/img/cards/tusken_raider.png",
+  "vader": "../!source/img/cards/vader.png",
+  "war_padme": "../!source/img/cards/war_padme.png",
+  "warrick": "../!source/img/cards/warrick.png",
+  "watto": "../!source/img/cards/watto.png",
+  "windu": "../!source/img/cards/windu.png",
+  "yoda": "../!source/img/cards/yoda.png",
+  "young_anakin": "../!source/img/cards/young_anakin.png",
+  "young_luke": "../!source/img/cards/young_luke.png"
+}); // shuffle(charsArr);
+// function getRandomInt(min, max) {
+//   min = Math.ceil(min);
+//   max = Math.floor(max);
+//   return Math.floor(Math.random() * (max - min)) + min;
+// }
+// function shuffle(array) {
+//   for (let i = array.length - 1; i > 0; i--) {
+//     let j = Math.floor(Math.random() * (i + 1));
+//     [array[i], array[j]] = [array[j], array[i]];
+//   }
+// }
 
 var Game = /*#__PURE__*/function () {
-  function Game() {
+  function Game(content, cardsPerGame) {
     _classCallCheck(this, Game);
 
+    this.content = content;
+    this.cardsPerGame = cardsPerGame;
     this.audioController = new AudioController();
     this.introState = new IntroState(this);
     this.playState = new PlayState(this);
@@ -3890,7 +3887,7 @@ var Game = /*#__PURE__*/function () {
     this.cachedCards = [];
     this.timer = null;
     this.timePoints = 30;
-    this.additionalTime = 40;
+    this.additionalTime = 20;
     this.initialTime = this.timePoints;
     this.checkpointTime = this.initialTime;
     this.lives = 2;
@@ -3901,12 +3898,6 @@ var Game = /*#__PURE__*/function () {
     key: "start",
     value: function start() {
       var _this = this;
-
-      window.onload = function (e) {
-        _this.isLocked = false;
-
-        _this.introState.removeLoader();
-      };
 
       this._preloadCards();
 
@@ -3924,6 +3915,12 @@ var Game = /*#__PURE__*/function () {
       this._generateStars(100, this.intro);
 
       this._generateStars(100, this.game);
+
+      window.onload = function (e) {
+        _this.isLocked = false;
+
+        _this.introState.removeLoader();
+      };
 
       document.documentElement.ondragstart = function () {
         return false;
@@ -3974,7 +3971,7 @@ var Game = /*#__PURE__*/function () {
           break;
 
         case type === "cards":
-          var result = this.cards.length * 2 - this.playState.uniqCardsPerLevel;
+          var result = this.cards.length * 2;
           this.counters.cardsInDeck.textContent = result;
           break;
 
@@ -4018,20 +4015,19 @@ var Game = /*#__PURE__*/function () {
   }, {
     key: "_preloadCards",
     value: function _preloadCards() {
-      var _iterator = _createForOfIteratorHelper(charsArr),
+      var _iterator = _createForOfIteratorHelper(this.content),
           _step;
 
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var char = _step.value;
           var backface = document.createElement("img");
-          backface.src = "/!source/img/cards/card_back.png";
+          backface.src = "../!source/img/cards/card_back.png";
           var imgPreload = document.createElement("img");
           imgPreload.src = char[1];
           var cardBody = createCard(char, "card");
           var cardBack = createCard(char, "card__back", cardBody, backface);
           var cardFace = createCard(char, "card__face", cardBody, imgPreload);
-          this.cards.push(cardBody);
           this.cachedCards.push(cardBody);
         }
       } catch (err) {
@@ -4039,6 +4035,8 @@ var Game = /*#__PURE__*/function () {
       } finally {
         _iterator.f();
       }
+
+      this.updateCardsDeck();
 
       function createCard(char, CSSclass) {
         var body = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -4057,6 +4055,12 @@ var Game = /*#__PURE__*/function () {
       }
     }
   }, {
+    key: "updateCardsDeck",
+    value: function updateCardsDeck() {
+      this.shuffle(this.cachedCards);
+      this.cards = this.cachedCards.slice(0, this.cardsPerGame);
+    }
+  }, {
     key: "_generateStars",
     value: function _generateStars(amount, target) {
       var skybox = target.querySelector(".skybox");
@@ -4067,8 +4071,8 @@ var Game = /*#__PURE__*/function () {
         star.classList.add("skybox__star");
         star.style.opacity = Math.random();
         skybox.append(star);
-        star.style.top = getRandomInt(0, 100) + "%";
-        star.style.left = getRandomInt(0, 100) + "%";
+        star.style.top = this.getRandomInt(0, 100) + "%";
+        star.style.left = this.getRandomInt(0, 100) + "%";
       }
 
       var throttle = false;
@@ -4079,18 +4083,32 @@ var Game = /*#__PURE__*/function () {
         }
 
         throttle = setTimeout(function () {
-          console.log(rec);
           resizeSkybox();
         }, 100);
       });
       resizeObserver.observe(document.documentElement);
 
       function resizeSkybox() {
-        //let calcLeftShift = document.documentElement.getBoundingClientRect().left - target.getBoundingClientRect().left;
-        //skybox.style.left = calcLeftShift + "px";
         skybox.style.width = document.documentElement.clientWidth + "px";
         skybox.style.height = document.documentElement.clientHeight + "px";
       }
+    }
+  }, {
+    key: "shuffle",
+    value: function shuffle(array) {
+      for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var _ref = [array[j], array[i]];
+        array[i] = _ref[0];
+        array[j] = _ref[1];
+      }
+    }
+  }, {
+    key: "getRandomInt",
+    value: function getRandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min)) + min;
     }
   }]);
 
@@ -4143,7 +4161,6 @@ var AudioController = /*#__PURE__*/function () {
     var thisController = this;
 
     this._fixAutoplay = function () {
-      console.log(thisController);
       thisController.intro.play();
       thisController.game.play();
       thisController.lose.play();
@@ -4164,8 +4181,7 @@ var AudioController = /*#__PURE__*/function () {
         sfx[0]++;
         if (sfx[0] === sfx.length) sfx[0] = 1;
         sfx = sfx[sfx[0]];
-      } //if (sfx === this.game) sfx.src = this.gameSRC;
-
+      }
 
       switch (true) {
         case sfx === this.intro:
@@ -4186,9 +4202,7 @@ var AudioController = /*#__PURE__*/function () {
           sfx.src = this.winSRC;
           sfx.loop = true;
           break;
-      } //sfx.load();
-      //sfx.src = sfx.src;
-
+      }
 
       sfx.play();
     }
@@ -4205,7 +4219,6 @@ var AudioController = /*#__PURE__*/function () {
           var currentVolume = initialVolume;
           var interval = null;
           interval = setInterval(function () {
-            console.log(currentVolume);
             currentVolume -= 0.1;
 
             if (currentVolume < 0) {
@@ -4403,7 +4416,6 @@ var PlayState = /*#__PURE__*/function () {
           break;
 
         case rec[0].attributeName === "data-unmatched-cards" && this.parent.game.dataset.unmatchedCards === "0":
-          console.log("All cards matched!");
           if (this.parent.cards.length === 0) this._endGame("win");else this._startNewLevel();
           break;
 
@@ -4419,7 +4431,6 @@ var PlayState = /*#__PURE__*/function () {
     key: "generateCards",
     value: function generateCards(amount, target) {
       if (this.parent.cards.length < this.uniqCardsPerLevel) amount = this.parent.cards.length;
-      this.parent.updateGameValue("cards");
 
       for (var i = 0; i < amount; i++) {
         var newCard = this.parent.cards.pop();
@@ -4431,6 +4442,8 @@ var PlayState = /*#__PURE__*/function () {
       this._shuffleCards(target);
 
       this._showCards(this.parent.timings.toShowCard);
+
+      this.parent.updateGameValue("cards");
 
       this._upateGameStats();
     }
@@ -4451,10 +4464,10 @@ var PlayState = /*#__PURE__*/function () {
     key: "_shuffleCards",
     value: function _shuffleCards(target) {
       var newArr = Array.from(target.children);
-      shuffle(newArr);
+      this.parent.shuffle(newArr);
 
       for (var i = newArr.length; i >= 0; i--) {
-        var randomIndex = getRandomInt(0, i);
+        var randomIndex = this.parent.getRandomInt(0, i);
         target.append(newArr[randomIndex]);
       }
     }
@@ -4597,8 +4610,6 @@ var PlayState = /*#__PURE__*/function () {
       this._enableCards();
 
       setTimeout(function () {
-        _this15.parent.isLocked = false;
-
         _this15.parent.updateGameValue("timer", true);
 
         _this15.generateCards(_this15.uniqCardsPerLevel, _this15.playableField);
@@ -4644,7 +4655,6 @@ var PlayState = /*#__PURE__*/function () {
         _this16.parent.skyboxGame.classList.add("game--hide");
       }, this.parent.timings.toFlipCard + this.parent.timings.toFadeCard);
       setTimeout(function () {
-        console.log(result);
         _this16.parent.game.dataset.isActive = "false";
 
         _this16.parent.toOriginalCondition(_this16.parent.game);
@@ -4743,8 +4753,10 @@ var EndGame = /*#__PURE__*/function () {
         _this18.parent.counters.cardsInDeck.textContent = "--";
         _this18.parent.game.dataset.timeLeft = "pending";
         _this18.parent.game.dataset.unmatchedCards = "pending";
-        _this18.parent.cards = _this18.parent.cachedCards.slice();
-        shuffle(_this18.parent.cards);
+
+        _this18.parent.updateCardsDeck(); // this.parent.cards = this.parent.cachedCards.slice();
+        // this.parent.shuffle(this.parent.cards);
+
 
         _this18.parent.clearPlayableField();
 
@@ -4785,7 +4797,7 @@ var EndGame = /*#__PURE__*/function () {
   return EndGame;
 }();
 
-var game = new Game();
+var game = new Game(charsArr, 10);
 game.start();
 }();
 /******/ })()

@@ -63,10 +63,9 @@ let charsArr = Object.entries({
 
 class Game {
   
-  constructor(content, cardsPerGame) {
+  constructor(content) {
     
     this.content = content;
-    this.cardsPerGame = cardsPerGame;
 
     this.audioController = new AudioController();
     this.introState = new IntroState(this);
@@ -102,7 +101,7 @@ class Game {
 
     this.timer = null;
     this.timePoints = 30;
-    this.additionalTime = 20;
+    this.additionalTime = 40;
     this.initialTime = this.timePoints;
     this.checkpointTime = this.initialTime;
 
@@ -112,6 +111,10 @@ class Game {
   }
 
   start() {
+    this.shuffle(this.content);
+    //this.content = this.content.slice(0, 10);
+    console.log(this.content);
+    
     this._preloadCards();
 
     this.playState.observer.observe(this.game, {
@@ -218,10 +221,9 @@ class Game {
       let cardBack = createCard(char, "card__back", cardBody, backface);
       let cardFace = createCard(char, "card__face", cardBody, imgPreload);
 
+      //this.cards.push(cardBody);
       this.cachedCards.push(cardBody); 
     }
-
-    this.updateCardsDeck();
 
     function createCard(char, CSSclass, body = false, ...part) {
       let newDIV = document.createElement("div");
@@ -241,7 +243,7 @@ class Game {
 
   updateCardsDeck() {
     this.shuffle(this.cachedCards);
-    this.cards = this.cachedCards.slice(0, this.cardsPerGame);
+    this.cards = this.cachedCards.slice(0, 10);
   }
 
   _generateStars(amount, target) {
@@ -269,6 +271,7 @@ class Game {
       }
       
       throttle = setTimeout(() => {
+        console.log(rec)
         resizeSkybox();
       }, 100);
     });
@@ -276,6 +279,8 @@ class Game {
     resizeObserver.observe(document.documentElement);
 
     function resizeSkybox() {
+      //let calcLeftShift = document.documentElement.getBoundingClientRect().left - target.getBoundingClientRect().left;
+      //skybox.style.left = calcLeftShift + "px";
       skybox.style.width = document.documentElement.clientWidth + "px";
       skybox.style.height = document.documentElement.clientHeight + "px";
     }
@@ -344,6 +349,7 @@ class AudioController {
     // fix default prevention of autoplay
     let thisController = this;
     this._fixAutoplay = function() {
+      console.log(thisController);
       thisController.intro.play();
       thisController.game.play();
       thisController.lose.play();
@@ -363,6 +369,7 @@ class AudioController {
       sfx = sfx[sfx[0]];
     }
 
+    //if (sfx === this.game) sfx.src = this.gameSRC;
     switch (true) {
       case sfx === this.intro:
         sfx.src = this.introSRC;
@@ -384,6 +391,8 @@ class AudioController {
         break;
     }
 
+    //sfx.load();
+    //sfx.src = sfx.src;
     sfx.play();
   }
   
@@ -400,6 +409,7 @@ class AudioController {
         let interval = null;
         
         interval = setInterval(() => {
+          console.log(currentVolume);
           currentVolume -= 0.1;
           
           if (currentVolume < 0) {
@@ -584,6 +594,8 @@ class PlayState {
         break;
       
       case (rec[0].attributeName === "data-unmatched-cards" && this.parent.game.dataset.unmatchedCards === "0"):
+        console.log("All cards matched!");
+
         if (this.parent.cards.length === 0) this._endGame("win");
         else this._startNewLevel();
         break;
@@ -757,6 +769,7 @@ class PlayState {
     this._enableCards();
     
     setTimeout(() => {
+      this.parent.isLocked = false;
 
       this.parent.updateGameValue("timer", true);
       this.generateCards(this.uniqCardsPerLevel, this.playableField);
@@ -810,6 +823,7 @@ class PlayState {
     }, this.parent.timings.toFlipCard + this.parent.timings.toFadeCard);
     
     setTimeout(() => {
+      console.log(result);
       this.parent.game.dataset.isActive = "false";
       this.parent.toOriginalCondition(this.parent.game);
       this.parent.toOriginalCondition(this.statsField);
@@ -899,9 +913,8 @@ class EndGame {
       this.parent.game.dataset.timeLeft = "pending";
       this.parent.game.dataset.unmatchedCards = "pending";
       
-      this.parent.updateCardsDeck();
-      // this.parent.cards = this.parent.cachedCards.slice();
-      // this.parent.shuffle(this.parent.cards);
+      this.parent.cards = this.parent.cachedCards.slice();
+      this.parent.shuffle(this.parent.cards);
 
       this.parent.clearPlayableField();
 
@@ -947,5 +960,5 @@ class EndGame {
 
 }
 
-let game = new Game(charsArr, 10);
+let game = new Game(charsArr);
 game.start();
