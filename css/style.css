@@ -657,6 +657,26 @@ body {
   -webkit-transform: rotateY(360deg);
           transform: rotateY(360deg);
 }
+.card__number {
+  position: absolute;
+  top: 6%;
+  left: 8%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 15%;
+  height: 11%;
+  color: #FFC500;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 50%;
+  background-color: black;
+}
 
 @media (max-width: 850px) {
   .game,

@@ -45,22 +45,6 @@ let charsArr = Object.entries({
   "young_luke": "./img/cards/young_luke.png",
 });
 
-// shuffle(charsArr);
-
-// function getRandomInt(min, max) {
-//   min = Math.ceil(min);
-//   max = Math.floor(max);
-//   return Math.floor(Math.random() * (max - min)) + min;
-// }
-
-// function shuffle(array) {
-//   for (let i = array.length - 1; i > 0; i--) {
-//     let j = Math.floor(Math.random() * (i + 1));
-
-//     [array[i], array[j]] = [array[j], array[i]];
-//   }
-// }
-
 class Game {
   
   constructor(content, cardsPerGame) {
@@ -101,7 +85,7 @@ class Game {
     this.cachedCards = [];
 
     this.timer = null;
-    this.timePoints = 30;
+    this.timePoints = 30; //30
     this.additionalTime = 20;
     this.initialTime = this.timePoints;
     this.checkpointTime = this.initialTime;
@@ -205,7 +189,7 @@ class Game {
   }
 
   _preloadCards() {
-
+    
     for (let char of this.content) {
 
       let backface = document.createElement("img");
@@ -609,9 +593,11 @@ class PlayState {
       target.append(newCardClone);
     
     }
-    
+
     this._shuffleCards(target);
     this._showCards(this.parent.timings.toShowCard);
+
+    this._addNumberToCard();
 
     this.parent.updateGameValue("cards");
     this._upateGameStats();
@@ -629,6 +615,33 @@ class PlayState {
     }, this.parent.timings.toShowCard * cardsOnTable);
 
     this.parent.game.dataset.unmatchedCards = cardsOnTable;
+  }
+
+  _addNumberToCard() {
+    let cards = this.playableField.querySelectorAll(".card__back");
+
+    let i = 0;
+
+    for (let card of cards) {
+      i++;
+
+      let isNumeric = card.querySelector(".card__number");
+
+      switch (true) {
+        case isNumeric !== null:
+          isNumeric.textContent = i;
+          break;
+        
+        case isNumeric === null:
+          let number = document.createElement("div");
+          number.classList.add("card__number");
+          number.textContent = i;
+          card.append(number);
+          break;
+      }
+      
+    }
+
   }
 
   _shuffleCards(target) {

@@ -3841,18 +3841,7 @@ var charsArr = Object.entries({
   "yoda": "./img/cards/yoda.png",
   "young_anakin": "./img/cards/young_anakin.png",
   "young_luke": "./img/cards/young_luke.png"
-}); // shuffle(charsArr);
-// function getRandomInt(min, max) {
-//   min = Math.ceil(min);
-//   max = Math.floor(max);
-//   return Math.floor(Math.random() * (max - min)) + min;
-// }
-// function shuffle(array) {
-//   for (let i = array.length - 1; i > 0; i--) {
-//     let j = Math.floor(Math.random() * (i + 1));
-//     [array[i], array[j]] = [array[j], array[i]];
-//   }
-// }
+});
 
 var Game = /*#__PURE__*/function () {
   function Game(content, cardsPerGame) {
@@ -3886,7 +3875,8 @@ var Game = /*#__PURE__*/function () {
     this.cards = [];
     this.cachedCards = [];
     this.timer = null;
-    this.timePoints = 30;
+    this.timePoints = 30; //30
+
     this.additionalTime = 20;
     this.initialTime = this.timePoints;
     this.checkpointTime = this.initialTime;
@@ -4443,6 +4433,8 @@ var PlayState = /*#__PURE__*/function () {
 
       this._showCards(this.parent.timings.toShowCard);
 
+      this._addNumberToCard();
+
       this.parent.updateGameValue("cards");
 
       this._upateGameStats();
@@ -4459,6 +4451,40 @@ var PlayState = /*#__PURE__*/function () {
         _this10.parent.timer = _this10.parent.startTimer();
       }, this.parent.timings.toShowCard * cardsOnTable);
       this.parent.game.dataset.unmatchedCards = cardsOnTable;
+    }
+  }, {
+    key: "_addNumberToCard",
+    value: function _addNumberToCard() {
+      var cards = this.playableField.querySelectorAll(".card__back");
+      var i = 0;
+
+      var _iterator3 = _createForOfIteratorHelper(cards),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var card = _step3.value;
+          i++;
+          var isNumeric = card.querySelector(".card__number");
+
+          switch (true) {
+            case isNumeric !== null:
+              isNumeric.textContent = i;
+              break;
+
+            case isNumeric === null:
+              var number = document.createElement("div");
+              number.classList.add("card__number");
+              number.textContent = i;
+              card.append(number);
+              break;
+          }
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
     }
   }, {
     key: "_shuffleCards",
@@ -4580,18 +4606,18 @@ var PlayState = /*#__PURE__*/function () {
       Array.from(document.querySelectorAll(selector)).forEach(function (item) {
         item.dataset.side = "back";
 
-        var _iterator3 = _createForOfIteratorHelper(item.children),
-            _step3;
+        var _iterator4 = _createForOfIteratorHelper(item.children),
+            _step4;
 
         try {
-          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-            var side = _step3.value;
+          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+            var side = _step4.value;
             side.classList.remove("rotate");
           }
         } catch (err) {
-          _iterator3.e(err);
+          _iterator4.e(err);
         } finally {
-          _iterator3.f();
+          _iterator4.f();
         }
 
         setTimeout(function () {

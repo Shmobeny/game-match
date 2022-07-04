@@ -72,8 +72,6 @@
   display: block;
   flex-grow: 0;
   flex-basis: 23.811%;
-  // max-width: 200px;
-  // max-height: 280px;
   margin-right: 10px;
   margin-bottom: 10px;
   padding-top: 33%;
@@ -158,6 +156,21 @@
     &.rotate {
       transform: rotateY(360deg);
     }
+  }
+
+  &__number {
+    position: absolute;
+    top: 6%;
+    left: 8%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 15%;
+    height: 11%;
+    color: #FFC500;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 50%;
+    background-color: black;
   }
 }
 
