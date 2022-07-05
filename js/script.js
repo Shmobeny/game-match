@@ -85,7 +85,7 @@ class Game {
     this.cachedCards = [];
 
     this.timer = null;
-    this.timePoints = 30; //30
+    this.timePoints = 999; //30
     this.additionalTime = 20;
     this.initialTime = this.timePoints;
     this.checkpointTime = this.initialTime;
@@ -337,6 +337,7 @@ class AudioController {
     document.documentElement.onpointerup = e => {
       document.documentElement.removeEventListener("pointerup", thisController._fixAutoplay);
     }
+      
     
   }
 
@@ -517,14 +518,72 @@ class PlayState {
 
     this.statsField = document.querySelector(".game__stats");
     this.playableField = document.querySelector(".game__mainfield");
+    this.pointers = document.querySelectorAll(".game__pointer");
 
     this.observer = new MutationObserver(rec => this._playStateChanges(rec));
+    this.pointersObserver = new IntersectionObserver(rec => this._pointersVisibility(rec), {
+      rootMargin: "-50px 0px 0px 0px",
+      threshold: 0
+    });
 
     this.uniqCardsPerLevel = 2;
     this.isCheckpoint = false;
 
     this.pickedCard = null;
     this.hand = [];
+
+    this.eventThrottle = false;
+
+    this.playableField.addEventListener("pointerover", this._hoverCard.bind(this));
+    this.playableField.addEventListener("pointermove", this._hoverCard.bind(this));
+    this.playableField.addEventListener("pointerout", this._hoverCard.bind(this));
+  }
+
+  _hoverCard(e) {
+    if (this.parent.isLocked) return;
+    if (this.eventThrottle && e.type === "pointermove") return;
+    if (!e.target.parentElement.classList.contains("card__back")) return;
+    
+    switch (true) {
+      case e.type === "pointerover":
+        e.target.closest(".card").classList.add("card--hovered");
+        break;
+
+      case e.type === "pointermove":
+        e.target.closest(".card").classList.add("card--hovered");
+        this.eventThrottle = true;
+        setTimeout(() => this.eventThrottle = false, 1000);
+        break;
+      
+      case e.type === "pointerout":
+        e.target.closest(".card").classList.remove("card--hovered");
+        break;
+    }
+  }
+
+  _pointersVisibility(rec) {
+    rec.forEach(item => {
+      let index = Array.from(this.playableField.children).indexOf(item.target);
+
+      if (index === 0) {
+        this.pointers[0].style.top = this.statsField.offsetHeight + "px";
+        if (!item.isIntersecting) this.pointers[0].classList.add("game__pointer--active");
+        if (item.isIntersecting) this.pointers[0].classList.remove("game__pointer--active");
+      }
+
+      if (index > 0) {
+        if (!item.isIntersecting) this.pointers[1].classList.add("game__pointer--active");
+        if (item.isIntersecting) this.pointers[1].classList.remove("game__pointer--active");
+      }
+    });
+  }
+
+  _hidePointers() {
+    this.pointersObserver.disconnect();
+
+    this.pointers.forEach(pointer => {
+      pointer.classList.remove("game__pointer--active");
+    });
   }
 
   _playStateChanges(rec) {
@@ -543,6 +602,8 @@ class PlayState {
 
         this.parent.game.before(this.statsField);
         this.parent.game.before(this.parent.skyboxGame);
+        this.parent.game.after(this.pointers[0]);
+        this.parent.game.after(this.pointers[1]);
         this.parent.skyboxGame.classList.add("skybox--fixed");
 
         setTimeout(() => {
@@ -565,6 +626,8 @@ class PlayState {
       
         this.parent.game.prepend(this.statsField);
         this.parent.game.prepend(this.parent.skyboxGame);
+        this.parent.game.prepend(this.pointers[0]);
+        this.parent.game.prepend(this.pointers[1]);
         break;
       
       case (rec[0].attributeName === "data-unmatched-cards" && this.parent.game.dataset.unmatchedCards === "0"):
@@ -612,6 +675,10 @@ class PlayState {
 
       this.parent.isLocked = false;
       this.parent.timer = this.parent.startTimer();
+
+      this.pointersObserver.observe(this.playableField.children[0]);
+      this.pointersObserver.observe(this.playableField.children[this.playableField.children.length - 1]);
+
     }, this.parent.timings.toShowCard * cardsOnTable);
 
     this.parent.game.dataset.unmatchedCards = cardsOnTable;
@@ -718,6 +785,7 @@ class PlayState {
     Array.from(document.querySelectorAll(".card--picked")).forEach(item => {
       item.classList.add("card--disabled");
       item.classList.remove("card--picked");
+      item.classList.remove("card--hovered");
     });
   }
 
@@ -750,6 +818,7 @@ class PlayState {
     Array.from(document.querySelectorAll(selector)).forEach(item => {
       
       item.dataset.side = "back";
+      item.classList.remove("card--hovered");
 
       for (let side of item.children) {
         side.classList.remove("rotate");
@@ -768,7 +837,9 @@ class PlayState {
     clearInterval(this.parent.timer);
 
     this._enableCards();
-    
+
+    this._hidePointers();
+
     setTimeout(() => {
 
       this.parent.updateGameValue("timer", true);
@@ -783,6 +854,8 @@ class PlayState {
 
     this.parent.isLocked = true;
     this.hand = [];
+
+    this._hidePointers();
 
     if (result === "win") clearInterval(this.parent.timer);
 
@@ -960,5 +1033,5 @@ class EndGame {
 
 }
 
-let game = new Game(charsArr, 10);
+let game = new Game(charsArr, 5);
 game.start();

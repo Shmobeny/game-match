@@ -140,6 +140,46 @@ body {
             transform: translateX(0px);
   }
 }
+@-webkit-keyframes pointerArrowUp {
+  from {
+    -webkit-transform: rotate(-90deg) translateX(0%) translateY(-50%);
+            transform: rotate(-90deg) translateX(0%) translateY(-50%);
+  }
+  to {
+    -webkit-transform: rotate(-90deg) translateX(-15%) translateY(-50%);
+            transform: rotate(-90deg) translateX(-15%) translateY(-50%);
+  }
+}
+@keyframes pointerArrowUp {
+  from {
+    -webkit-transform: rotate(-90deg) translateX(0%) translateY(-50%);
+            transform: rotate(-90deg) translateX(0%) translateY(-50%);
+  }
+  to {
+    -webkit-transform: rotate(-90deg) translateX(-15%) translateY(-50%);
+            transform: rotate(-90deg) translateX(-15%) translateY(-50%);
+  }
+}
+@-webkit-keyframes pointerArrowDown {
+  from {
+    -webkit-transform: rotate(90deg) translateX(-100%) translateY(50%);
+            transform: rotate(90deg) translateX(-100%) translateY(50%);
+  }
+  to {
+    -webkit-transform: rotate(90deg) translateX(-115%) translateY(50%);
+            transform: rotate(90deg) translateX(-115%) translateY(50%);
+  }
+}
+@keyframes pointerArrowDown {
+  from {
+    -webkit-transform: rotate(90deg) translateX(-100%) translateY(50%);
+            transform: rotate(90deg) translateX(-100%) translateY(50%);
+  }
+  to {
+    -webkit-transform: rotate(90deg) translateX(-115%) translateY(50%);
+            transform: rotate(90deg) translateX(-115%) translateY(50%);
+  }
+}
 @-webkit-keyframes scrollerMove {
   0% {
     -webkit-transform: rotateX(55deg) translateY(0px);
@@ -559,6 +599,30 @@ body {
       flex-wrap: wrap;
   padding: 75px 0 10px 10px;
 }
+.game__pointer {
+  position: fixed;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  background-image: url("../img/interface/skip.svg");
+  background-color: cyan;
+  border-radius: 50%;
+  -webkit-transition: opacity 400ms ease-in-out;
+  transition: opacity 400ms ease-in-out;
+  opacity: 0;
+}
+.game__pointer--up {
+  -webkit-animation: pointerArrowUp 1s ease-in-out 0s infinite alternate forwards;
+          animation: pointerArrowUp 1s ease-in-out 0s infinite alternate forwards;
+}
+.game__pointer--down {
+  top: 100%;
+  -webkit-animation: pointerArrowDown 1s ease-in-out 0s infinite alternate forwards;
+          animation: pointerArrowDown 1s ease-in-out 0s infinite alternate forwards;
+}
+.game__pointer--active {
+  opacity: 1;
+}
 
 .card {
   position: relative;
@@ -582,10 +646,11 @@ body {
   transition: transform 100ms ease-in-out;
   transition: transform 100ms ease-in-out, -webkit-transform 100ms ease-in-out;
   opacity: 0;
+  z-index: 2;
 }
-.card[data-side=back]:hover {
-  -webkit-transform: perspective(1000px) rotateX(-9deg);
-          transform: perspective(1000px) rotateX(-9deg);
+.card--hovered {
+  -webkit-transform: perspective(1000px) rotateX(-10deg);
+          transform: perspective(1000px) rotateX(-10deg);
   z-index: 4;
 }
 .card--picked {
@@ -637,6 +702,8 @@ body {
   transition: -webkit-transform 500ms ease-in-out;
   transition: transform 500ms ease-in-out;
   transition: transform 500ms ease-in-out, -webkit-transform 500ms ease-in-out;
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
   overflow: hidden;
   cursor: pointer;
 }

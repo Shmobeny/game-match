@@ -63,6 +63,31 @@
     flex-wrap: wrap;
     padding: 75px 0 10px 10px;
   }
+
+  &__pointer {
+    position: fixed;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    background-image: url("../img/interface/skip.svg");
+    background-color: cyan;
+    border-radius: 50%;
+    transition: opacity 400ms ease-in-out;
+    opacity: 0;
+
+    &--up {
+      animation: pointerArrowUp 1s ease-in-out 0s infinite alternate forwards;
+    }
+
+    &--down {
+      top: 100%;
+      animation: pointerArrowDown 1s ease-in-out 0s infinite alternate forwards;
+    }
+
+    &--active {
+      opacity: 1;
+    }
+  }
   
 }
 
@@ -79,9 +104,15 @@
   transform-origin: center bottom;
   transition: transform 100ms ease-in-out;
   opacity: 0;
+  z-index: 2;
 
-  &[data-side="back"]:hover {
-    transform: perspective(1000px) rotateX(-9deg);
+  // &[data-side="back"]:hover {
+  //   transform: perspective(1000px) rotateX(-9deg);
+  //   z-index: 4;
+  // }
+
+  &--hovered {
+    transform: perspective(1000px) rotateX(-10deg);
     z-index: 4;
   }
 
@@ -101,7 +132,6 @@
   }
 
   &--disabled {
-    //opacity: 0.7 !important;
     z-index: 3;
     
     .card__face::after {
@@ -134,6 +164,7 @@
     background-repeat: no-repeat;
     background-size: contain;
     transition: transform 500ms ease-in-out;
+    transform-origin: center center;
     overflow: hidden;
     cursor: pointer;
 

@@ -3875,7 +3875,7 @@ var Game = /*#__PURE__*/function () {
     this.cards = [];
     this.cachedCards = [];
     this.timer = null;
-    this.timePoints = 30; //30
+    this.timePoints = 999; //30
 
     this.additionalTime = 20;
     this.initialTime = this.timePoints;
@@ -4362,19 +4362,85 @@ var PlayState = /*#__PURE__*/function () {
     this.parent = parent;
     this.statsField = document.querySelector(".game__stats");
     this.playableField = document.querySelector(".game__mainfield");
+    this.pointers = document.querySelectorAll(".game__pointer");
     this.observer = new MutationObserver(function (rec) {
       return _this8._playStateChanges(rec);
+    });
+    this.pointersObserver = new IntersectionObserver(function (rec) {
+      return _this8._pointersVisibility(rec);
+    }, {
+      rootMargin: "-50px 0px 0px 0px",
+      threshold: 0
     });
     this.uniqCardsPerLevel = 2;
     this.isCheckpoint = false;
     this.pickedCard = null;
     this.hand = [];
+    this.eventThrottle = false;
+    this.playableField.addEventListener("pointerover", this._hoverCard.bind(this));
+    this.playableField.addEventListener("pointermove", this._hoverCard.bind(this));
+    this.playableField.addEventListener("pointerout", this._hoverCard.bind(this));
   }
 
   _createClass(PlayState, [{
+    key: "_hoverCard",
+    value: function _hoverCard(e) {
+      var _this9 = this;
+
+      if (this.parent.isLocked) return;
+      if (this.eventThrottle && e.type === "pointermove") return;
+      if (!e.target.parentElement.classList.contains("card__back")) return;
+
+      switch (true) {
+        case e.type === "pointerover":
+          e.target.closest(".card").classList.add("card--hovered");
+          break;
+
+        case e.type === "pointermove":
+          e.target.closest(".card").classList.add("card--hovered");
+          this.eventThrottle = true;
+          setTimeout(function () {
+            return _this9.eventThrottle = false;
+          }, 1000);
+          break;
+
+        case e.type === "pointerout":
+          e.target.closest(".card").classList.remove("card--hovered");
+          break;
+      }
+    }
+  }, {
+    key: "_pointersVisibility",
+    value: function _pointersVisibility(rec) {
+      var _this10 = this;
+
+      rec.forEach(function (item) {
+        var index = Array.from(_this10.playableField.children).indexOf(item.target);
+
+        if (index === 0) {
+          _this10.pointers[0].style.top = _this10.statsField.offsetHeight + "px";
+          if (!item.isIntersecting) _this10.pointers[0].classList.add("game__pointer--active");
+          if (item.isIntersecting) _this10.pointers[0].classList.remove("game__pointer--active");
+        }
+
+        if (index > 0) {
+          if (!item.isIntersecting) _this10.pointers[1].classList.add("game__pointer--active");
+          if (item.isIntersecting) _this10.pointers[1].classList.remove("game__pointer--active");
+        }
+      });
+    }
+  }, {
+    key: "_hidePointers",
+    value: function _hidePointers() {
+      this.pointersObserver.disconnect();
+      this.pointers.forEach(function (pointer) {
+        pointer.classList.remove("game__pointer--active");
+      });
+    }
+  }, {
     key: "_playStateChanges",
     value: function _playStateChanges(rec) {
-      var _this9 = this;
+      var _this11 = this;
 
       switch (true) {
         case rec[0].attributeName === "data-is-active" && this.parent.game.dataset.isActive === "true":
@@ -4386,14 +4452,16 @@ var PlayState = /*#__PURE__*/function () {
           this.parent.skyboxGame.classList.add("game--active");
           this.parent.game.before(this.statsField);
           this.parent.game.before(this.parent.skyboxGame);
+          this.parent.game.after(this.pointers[0]);
+          this.parent.game.after(this.pointers[1]);
           this.parent.skyboxGame.classList.add("skybox--fixed");
           setTimeout(function () {
-            if (_this9.isCheckpoint) {
-              _this9._showCards(_this9.parent.timings.toShowCard);
+            if (_this11.isCheckpoint) {
+              _this11._showCards(_this11.parent.timings.toShowCard);
 
-              _this9._upateGameStats();
+              _this11._upateGameStats();
             } else {
-              _this9.generateCards(_this9.uniqCardsPerLevel, _this9.playableField);
+              _this11.generateCards(_this11.uniqCardsPerLevel, _this11.playableField);
             }
           }, this.parent.timings.toShowGameField);
           break;
@@ -4403,6 +4471,8 @@ var PlayState = /*#__PURE__*/function () {
           this.parent.toOriginalCondition(document.body, false, true);
           this.parent.game.prepend(this.statsField);
           this.parent.game.prepend(this.parent.skyboxGame);
+          this.parent.game.prepend(this.pointers[0]);
+          this.parent.game.prepend(this.pointers[1]);
           break;
 
         case rec[0].attributeName === "data-unmatched-cards" && this.parent.game.dataset.unmatchedCards === "0":
@@ -4442,13 +4512,17 @@ var PlayState = /*#__PURE__*/function () {
   }, {
     key: "_upateGameStats",
     value: function _upateGameStats() {
-      var _this10 = this;
+      var _this12 = this;
 
       var cardsOnTable = this.playableField.children.length;
       setTimeout(function () {
-        if (_this10.isCheckpoint) _this10.isCheckpoint = false;
-        _this10.parent.isLocked = false;
-        _this10.parent.timer = _this10.parent.startTimer();
+        if (_this12.isCheckpoint) _this12.isCheckpoint = false;
+        _this12.parent.isLocked = false;
+        _this12.parent.timer = _this12.parent.startTimer();
+
+        _this12.pointersObserver.observe(_this12.playableField.children[0]);
+
+        _this12.pointersObserver.observe(_this12.playableField.children[_this12.playableField.children.length - 1]);
       }, this.parent.timings.toShowCard * cardsOnTable);
       this.parent.game.dataset.unmatchedCards = cardsOnTable;
     }
@@ -4547,16 +4621,16 @@ var PlayState = /*#__PURE__*/function () {
   }, {
     key: "_cardsMatched",
     value: function _cardsMatched() {
-      var _this11 = this;
+      var _this13 = this;
 
       return setTimeout(function () {
-        _this11.parent.audioController.play(_this11.parent.audioController.matched);
+        _this13.parent.audioController.play(_this13.parent.audioController.matched);
 
-        _this11.parent.isLocked = false;
+        _this13.parent.isLocked = false;
 
-        _this11._disableCards();
+        _this13._disableCards();
 
-        _this11.parent.game.dataset.unmatchedCards -= 2;
+        _this13.parent.game.dataset.unmatchedCards -= 2;
       }, this.parent.timings.toCheckMatch);
     }
   }, {
@@ -4565,12 +4639,13 @@ var PlayState = /*#__PURE__*/function () {
       Array.from(document.querySelectorAll(".card--picked")).forEach(function (item) {
         item.classList.add("card--disabled");
         item.classList.remove("card--picked");
+        item.classList.remove("card--hovered");
       });
     }
   }, {
     key: "_enableCards",
     value: function _enableCards() {
-      var _this12 = this;
+      var _this14 = this;
 
       this._flipCardsBack(".card--disabled");
 
@@ -4579,32 +4654,33 @@ var PlayState = /*#__PURE__*/function () {
         setTimeout(function () {
           item.classList.remove("card--appear");
           item.classList.add("card--disappear");
-        }, _this12.parent.timings.toFlipCard);
+        }, _this14.parent.timings.toFlipCard);
         setTimeout(function () {
           item.classList.remove("card--disappear");
-        }, _this12.parent.timings.toFlipCard + _this12.parent.timings.toFadeCard);
+        }, _this14.parent.timings.toFlipCard + _this14.parent.timings.toFadeCard);
       });
     }
   }, {
     key: "_cardsMismatched",
     value: function _cardsMismatched() {
-      var _this13 = this;
+      var _this15 = this;
 
       return setTimeout(function () {
-        _this13.parent.audioController.play(_this13.parent.audioController.unmatched);
+        _this15.parent.audioController.play(_this15.parent.audioController.unmatched);
 
-        _this13.parent.isLocked = false;
+        _this15.parent.isLocked = false;
 
-        _this13._flipCardsBack(".card--picked");
+        _this15._flipCardsBack(".card--picked");
       }, this.parent.timings.toCheckMatch);
     }
   }, {
     key: "_flipCardsBack",
     value: function _flipCardsBack(selector) {
-      var _this14 = this;
+      var _this16 = this;
 
       Array.from(document.querySelectorAll(selector)).forEach(function (item) {
         item.dataset.side = "back";
+        item.classList.remove("card--hovered");
 
         var _iterator4 = _createForOfIteratorHelper(item.children),
             _step4;
@@ -4622,34 +4698,39 @@ var PlayState = /*#__PURE__*/function () {
 
         setTimeout(function () {
           if (item.dataset.side === "back") item.classList.remove("card--picked");
-        }, _this14.parent.timings.toFlipCard);
+        }, _this16.parent.timings.toFlipCard);
       });
     }
   }, {
     key: "_startNewLevel",
     value: function _startNewLevel() {
-      var _this15 = this;
+      var _this17 = this;
 
       this.parent.isLocked = true;
       clearInterval(this.parent.timer);
 
       this._enableCards();
 
+      this._hidePointers();
+
       setTimeout(function () {
-        _this15.parent.updateGameValue("timer", true);
+        _this17.parent.updateGameValue("timer", true);
 
-        _this15.generateCards(_this15.uniqCardsPerLevel, _this15.playableField);
+        _this17.generateCards(_this17.uniqCardsPerLevel, _this17.playableField);
 
-        _this15.parent.game.scrollIntoView();
+        _this17.parent.game.scrollIntoView();
       }, this.parent.timings.toFlipCard + this.parent.timings.toFadeCard);
     }
   }, {
     key: "_endGame",
     value: function _endGame(result) {
-      var _this16 = this;
+      var _this18 = this;
 
       this.parent.isLocked = true;
       this.hand = [];
+
+      this._hidePointers();
+
       if (result === "win") clearInterval(this.parent.timer);
       this.parent.audioController.stop(this.parent.audioController.game, "soft", (this.parent.timings.toFlipCard + this.parent.timings.toFadeCard + this.parent.timings.toFadeGameField) / 10);
       Array.from(this.playableField.children).forEach(function (item) {
@@ -4660,39 +4741,39 @@ var PlayState = /*#__PURE__*/function () {
           item.classList.remove("card--disabled", "card--appear");
           item.classList.add("card--disappear");
           item.dataset.side = "back";
-        }, _this16.parent.timings.toFlipCard);
+        }, _this18.parent.timings.toFlipCard);
         setTimeout(function () {
           item.classList.remove("card--disappear");
-        }, _this16.parent.timings.toFlipCard + _this16.parent.timings.toFadeCard);
+        }, _this18.parent.timings.toFlipCard + _this18.parent.timings.toFadeCard);
       });
       setTimeout(function () {
-        _this16.parent.game.scrollIntoView();
+        _this18.parent.game.scrollIntoView();
 
-        _this16.parent.game.classList.remove("game--active");
+        _this18.parent.game.classList.remove("game--active");
 
-        _this16.statsField.classList.remove("game--active");
+        _this18.statsField.classList.remove("game--active");
 
-        _this16.parent.skyboxGame.classList.remove("game--active");
+        _this18.parent.skyboxGame.classList.remove("game--active");
 
-        _this16.parent.game.classList.add("game--hide");
+        _this18.parent.game.classList.add("game--hide");
 
-        _this16.statsField.classList.add("game--hide");
+        _this18.statsField.classList.add("game--hide");
 
-        _this16.parent.skyboxGame.classList.add("game--hide");
+        _this18.parent.skyboxGame.classList.add("game--hide");
       }, this.parent.timings.toFlipCard + this.parent.timings.toFadeCard);
       setTimeout(function () {
-        _this16.parent.game.dataset.isActive = "false";
+        _this18.parent.game.dataset.isActive = "false";
 
-        _this16.parent.toOriginalCondition(_this16.parent.game);
+        _this18.parent.toOriginalCondition(_this18.parent.game);
 
-        _this16.parent.toOriginalCondition(_this16.statsField);
+        _this18.parent.toOriginalCondition(_this18.statsField);
 
-        _this16.parent.toOriginalCondition(_this16.parent.skyboxGame);
+        _this18.parent.toOriginalCondition(_this18.parent.skyboxGame);
 
-        _this16.parent.isLocked = false;
-        _this16.parent.messages.dataset.isActive = "true";
+        _this18.parent.isLocked = false;
+        _this18.parent.messages.dataset.isActive = "true";
         setTimeout(function () {
-          return _this16.parent.messages.dataset.gameResult = result;
+          return _this18.parent.messages.dataset.gameResult = result;
         }, 0);
       }, this.parent.timings.toFadeCard + this.parent.timings.toFlipCard + this.parent.timings.toFadeGameField);
     }
@@ -4703,7 +4784,7 @@ var PlayState = /*#__PURE__*/function () {
 
 var EndGame = /*#__PURE__*/function () {
   function EndGame(parent) {
-    var _this17 = this;
+    var _this19 = this;
 
     _classCallCheck(this, EndGame);
 
@@ -4714,7 +4795,7 @@ var EndGame = /*#__PURE__*/function () {
     this.shadowMessageLose = this.messageLose.querySelector(".logo__shadow");
     this.continueButton = document.querySelector("[data-role=\"continue\"]");
     this.observer = new MutationObserver(function (rec) {
-      return _this17._messagesChanges(rec);
+      return _this19._messagesChanges(rec);
     });
   }
 
@@ -4757,46 +4838,46 @@ var EndGame = /*#__PURE__*/function () {
   }, {
     key: "_restart",
     value: function _restart(e) {
-      var _this18 = this;
+      var _this20 = this;
 
       this.parent.isLocked = true;
       var currentMessage = e.target.closest(".message");
       currentMessage.classList.add("message--hiding");
       setTimeout(function () {
-        _this18.parent.toOriginalCondition(currentMessage);
+        _this20.parent.toOriginalCondition(currentMessage);
 
-        _this18.parent.toOriginalCondition(_this18.shadowMessageVictory);
+        _this20.parent.toOriginalCondition(_this20.shadowMessageVictory);
 
-        _this18.parent.toOriginalCondition(_this18.shadowMessageLose);
+        _this20.parent.toOriginalCondition(_this20.shadowMessageLose);
 
-        _this18.parent.messages.dataset.isActive = "false";
-        _this18.parent.timePoints = _this18.parent.initialTime;
-        _this18.parent.lives = _this18.parent.initialLives;
+        _this20.parent.messages.dataset.isActive = "false";
+        _this20.parent.timePoints = _this20.parent.initialTime;
+        _this20.parent.lives = _this20.parent.initialLives;
 
-        _this18.parent.updateGameValue("lives");
+        _this20.parent.updateGameValue("lives");
 
-        _this18.parent.counters.timer.textContent = "--";
-        _this18.parent.counters.cardsInDeck.textContent = "--";
-        _this18.parent.game.dataset.timeLeft = "pending";
-        _this18.parent.game.dataset.unmatchedCards = "pending";
+        _this20.parent.counters.timer.textContent = "--";
+        _this20.parent.counters.cardsInDeck.textContent = "--";
+        _this20.parent.game.dataset.timeLeft = "pending";
+        _this20.parent.game.dataset.unmatchedCards = "pending";
 
-        _this18.parent.updateCardsDeck(); // this.parent.cards = this.parent.cachedCards.slice();
+        _this20.parent.updateCardsDeck(); // this.parent.cards = this.parent.cachedCards.slice();
         // this.parent.shuffle(this.parent.cards);
 
 
-        _this18.parent.clearPlayableField();
+        _this20.parent.clearPlayableField();
 
-        _this18.parent.toOriginalCondition(_this18.continueButton);
+        _this20.parent.toOriginalCondition(_this20.continueButton);
 
-        _this18.parent.toOriginalCondition(_this18.parent.intro, false, true);
+        _this20.parent.toOriginalCondition(_this20.parent.intro, false, true);
 
-        _this18.parent.isLocked = false;
+        _this20.parent.isLocked = false;
       }, 1500);
     }
   }, {
     key: "_continue",
     value: function _continue(e) {
-      var _this19 = this;
+      var _this21 = this;
 
       if (e.target.classList.contains("message__button--disabled")) return;
       this.parent.isLocked = true;
@@ -4804,17 +4885,17 @@ var EndGame = /*#__PURE__*/function () {
       this.parent.updateGameValue("lives");
       this.messageLose.classList.add("message--hiding");
       setTimeout(function () {
-        _this19.parent.toOriginalCondition(_this19.messageLose);
+        _this21.parent.toOriginalCondition(_this21.messageLose);
 
-        _this19.parent.toOriginalCondition(_this19.shadowMessageLose);
+        _this21.parent.toOriginalCondition(_this21.shadowMessageLose);
 
-        _this19.parent.messages.dataset.isActive = "false";
-        _this19.parent.timePoints = _this19.parent.checkpointTime;
-        _this19.parent.counters.timer.textContent = "--";
-        _this19.parent.game.dataset.isActive = "true";
-        _this19.parent.game.dataset.timeLeft = _this19.parent.timePoints;
-        _this19.parent.game.dataset.unmatchedCards = "pending";
-        _this19.parent.isLocked = false;
+        _this21.parent.messages.dataset.isActive = "false";
+        _this21.parent.timePoints = _this21.parent.checkpointTime;
+        _this21.parent.counters.timer.textContent = "--";
+        _this21.parent.game.dataset.isActive = "true";
+        _this21.parent.game.dataset.timeLeft = _this21.parent.timePoints;
+        _this21.parent.game.dataset.unmatchedCards = "pending";
+        _this21.parent.isLocked = false;
       }, 1500);
       if (this.parent.lives === 0) e.target.classList.add("message__button--disabled");
     }
@@ -4823,7 +4904,7 @@ var EndGame = /*#__PURE__*/function () {
   return EndGame;
 }();
 
-var game = new Game(charsArr, 10);
+var game = new Game(charsArr, 5);
 game.start();
 }();
 /******/ })()

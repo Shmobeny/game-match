@@ -47,6 +47,26 @@
   }
 }
 
+@keyframes pointerArrowUp {
+  from {
+    transform: rotate(-90deg) translateX(0%) translateY(-50%);
+  } 
+  
+  to {
+    transform: rotate(-90deg) translateX(-15%) translateY(-50%);
+  }
+}
+
+@keyframes pointerArrowDown {
+  from {
+    transform: rotate(90deg) translateX(-100%) translateY(50%);
+  } 
+  
+  to {
+    transform: rotate(90deg) translateX(-115%) translateY(50%);
+  }
+}
+
 @keyframes scrollerMove {
   0% {
     transform: rotateX(55deg) translateY(0px);
