@@ -3875,7 +3875,7 @@ var Game = /*#__PURE__*/function () {
     this.cards = [];
     this.cachedCards = [];
     this.timer = null;
-    this.timePoints = 999; //30
+    this.timePoints = 30; //30
 
     this.additionalTime = 20;
     this.initialTime = this.timePoints;
@@ -3920,14 +3920,21 @@ var Game = /*#__PURE__*/function () {
         return false;
       };
 
+      document.documentElement.addEventListener("dblclick", toggleFullScreen);
       this.intro.addEventListener("pointerup", function (e) {
         return _this.introState.start(e);
+      }, {
+        passive: true
       });
       this.game.addEventListener("pointerup", function (e) {
         return _this.playState.flipCard(e);
+      }, {
+        passive: true
       });
       this.messages.addEventListener("pointerup", function (e) {
         return _this.endGame.action(e);
+      }, {
+        passive: true
       });
     }
   }, {
@@ -4155,13 +4162,12 @@ var AudioController = /*#__PURE__*/function () {
       thisController.game.play();
       thisController.lose.play();
       thisController.win.play();
+      setTimeout(function () {
+        document.documentElement.removeEventListener("pointerup", thisController._fixAutoplay);
+      }, 0);
     };
 
     document.documentElement.addEventListener("pointerup", thisController._fixAutoplay);
-
-    document.documentElement.onpointerup = function (e) {
-      document.documentElement.removeEventListener("pointerup", thisController._fixAutoplay);
-    };
   }
 
   _createClass(AudioController, [{
@@ -4903,6 +4909,19 @@ var EndGame = /*#__PURE__*/function () {
 
   return EndGame;
 }();
+
+function toggleFullScreen() {
+  var doc = window.document;
+  var docEl = doc.documentElement;
+  var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+  var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+  if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+    requestFullScreen.call(docEl);
+  } else {
+    cancelFullScreen.call(doc);
+  }
+}
 
 var game = new Game(charsArr, 5);
 game.start();

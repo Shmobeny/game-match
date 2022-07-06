@@ -85,7 +85,7 @@ class Game {
     this.cachedCards = [];
 
     this.timer = null;
-    this.timePoints = 999; //30
+    this.timePoints = 30; //30
     this.additionalTime = 20;
     this.initialTime = this.timePoints;
     this.checkpointTime = this.initialTime;
@@ -122,9 +122,11 @@ class Game {
     document.documentElement.ondragstart = () => false;
     document.documentElement.onselectstart = () => false;
 
-    this.intro.addEventListener("pointerup", e => this.introState.start(e));
-    this.game.addEventListener("pointerup", e => this.playState.flipCard(e));
-    this.messages.addEventListener("pointerup", e => this.endGame.action(e));
+    document.documentElement.addEventListener("dblclick", toggleFullScreen);
+
+    this.intro.addEventListener("pointerup", e => this.introState.start(e), {passive: true});
+    this.game.addEventListener("pointerup", e => this.playState.flipCard(e), {passive: true});
+    this.messages.addEventListener("pointerup", e => this.endGame.action(e), {passive: true});
   }
 
   toOriginalCondition(elem, css = true, style = false) {
@@ -332,12 +334,13 @@ class AudioController {
       thisController.game.play();
       thisController.lose.play();
       thisController.win.play();
+
+      setTimeout(() => {
+        document.documentElement.removeEventListener("pointerup", thisController._fixAutoplay);
+      }, 0);
     }
+
     document.documentElement.addEventListener("pointerup", thisController._fixAutoplay);
-    document.documentElement.onpointerup = e => {
-      document.documentElement.removeEventListener("pointerup", thisController._fixAutoplay);
-    }
-      
     
   }
 
@@ -1031,6 +1034,33 @@ class EndGame {
     if (this.parent.lives === 0) e.target.classList.add("message__button--disabled");
   }
 
+}
+
+function toggleFullScreen() {
+  var doc = window.document;
+  var docEl = doc.documentElement;
+
+  var requestFullScreen =
+    docEl.requestFullscreen ||
+    docEl.mozRequestFullScreen ||
+    docEl.webkitRequestFullScreen ||
+    docEl.msRequestFullscreen;
+  var cancelFullScreen =
+    doc.exitFullscreen ||
+    doc.mozCancelFullScreen ||
+    doc.webkitExitFullscreen ||
+    doc.msExitFullscreen;
+
+  if (
+    !doc.fullscreenElement &&
+    !doc.mozFullScreenElement &&
+    !doc.webkitFullscreenElement &&
+    !doc.msFullscreenElement
+  ) {
+    requestFullScreen.call(docEl);
+  } else {
+    cancelFullScreen.call(doc);
+  }
 }
 
 let game = new Game(charsArr, 5);
