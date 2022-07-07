@@ -47,10 +47,11 @@ let charsArr = Object.entries({
 
 class Game {
   
-  constructor(content, cardsPerGame) {
+  constructor(content, cardsPerGame, cardsPerLevel) {
     
     this.content = content;
     this.cardsPerGame = cardsPerGame;
+    this.cardsPerLevel = cardsPerLevel;
 
     this.audioController = new AudioController();
     this.introState = new IntroState(this);
@@ -122,7 +123,7 @@ class Game {
     document.documentElement.ondragstart = () => false;
     document.documentElement.onselectstart = () => false;
 
-    document.documentElement.addEventListener("dblclick", toggleFullScreen);
+    //document.documentElement.addEventListener("dblclick", toggleFullScreen);
 
     this.intro.addEventListener("pointerup", e => this.introState.start(e), {passive: true});
     this.game.addEventListener("pointerup", e => this.playState.flipCard(e), {passive: true});
@@ -171,15 +172,7 @@ class Game {
       this.timePoints--;
       this.updateGameValue("timer");
       
-      if (this.timePoints < 0) {
-        
-        setTimeout(() => {
-          this.timePoints = 0;
-          this.updateGameValue("timer");
-        }, 0);
-
-        clearInterval(this.timer);
-      }
+      if (this.timePoints === 0) clearInterval(this.timer);
     }, 1000);
   }
 
@@ -525,12 +518,13 @@ class PlayState {
 
     this.observer = new MutationObserver(rec => this._playStateChanges(rec));
     this.pointersObserver = new IntersectionObserver(rec => this._pointersVisibility(rec), {
-      rootMargin: "-50px 0px 0px 0px",
+      rootMargin: "-65px 0px -10px 0px",
       threshold: 0
     });
 
-    this.uniqCardsPerLevel = 2;
+    this.uniqCardsPerLevel = this.parent.cardsPerLevel;
     this.isCheckpoint = false;
+    this.endGameInitiated = false;
 
     this.pickedCard = null;
     this.hand = [];
@@ -638,9 +632,12 @@ class PlayState {
         else this._startNewLevel();
         break;
 
-      case (rec[0].attributeName === "data-time-left" && this.parent.game.dataset.timeLeft === "-1"):
-        this.isCheckpoint = true;
-        this._endGame("lose");
+      case (rec[0].attributeName === "data-time-left" && this.parent.game.dataset.timeLeft === "0"):
+        this.endGameInitiated = setTimeout(() => {
+          console.log("endGameInitiated")
+          this.isCheckpoint = true;
+          this._endGame("lose");
+        }, 1000);
         break;
     }
 
@@ -772,6 +769,11 @@ class PlayState {
   }
 
   _cardsMatched() {
+    if (this.endGameInitiated && this.parent.game.dataset.unmatchedCards === "2") {
+      clearTimeout(this.endGameInitiated);
+      this.endGameInitiated = false;
+    }
+
     return setTimeout(() => {
 
       this.parent.audioController.play(this.parent.audioController.matched);
@@ -834,11 +836,11 @@ class PlayState {
   }
 
   _startNewLevel() {
-      
+    
     this.parent.isLocked = true;
     
     clearInterval(this.parent.timer);
-
+    
     this._enableCards();
 
     this._hidePointers();
@@ -989,8 +991,6 @@ class EndGame {
       this.parent.game.dataset.unmatchedCards = "pending";
       
       this.parent.updateCardsDeck();
-      // this.parent.cards = this.parent.cachedCards.slice();
-      // this.parent.shuffle(this.parent.cards);
 
       this.parent.clearPlayableField();
 
@@ -1027,8 +1027,6 @@ class EndGame {
       this.parent.game.dataset.timeLeft = this.parent.timePoints;
       this.parent.game.dataset.unmatchedCards = "pending";
 
-      this.parent.isLocked = false;
-
     }, 1500);
 
     if (this.parent.lives === 0) e.target.classList.add("message__button--disabled");
@@ -1063,5 +1061,5 @@ function toggleFullScreen() {
   }
 }
 
-let game = new Game(charsArr, 5);
+let game = new Game(charsArr, 10, 2);
 game.start();

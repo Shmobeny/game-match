@@ -1,3 +1,8 @@
+//@import url('https://fonts.googleapis.com/css2?family=Pathway+Gothic+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Pathway+Gothic+One&display=swap');
+
+*:active {-webkit-tap-highlight-color: transparent;}
+
 html, body {
   height: 100%;
   overflow-x: hidden;
@@ -6,12 +11,9 @@ html, body {
 
 body {
   color: white;
+  font-family: 'Pathway Gothic One', sans-serif;
   background-color: black;
 }
-
-// img {
-//   touch-action: none;
-// }
 
 .skybox {
   position: absolute;

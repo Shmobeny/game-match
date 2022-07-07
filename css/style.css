@@ -1,8 +1,13 @@
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Pathway+Gothic+One&display=swap");
 html,
 body,
 p {
   margin: 0;
   padding: 0;
+}
+
+*:active {
+  -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
@@ -13,6 +18,7 @@ html, body {
 
 body {
   color: white;
+  font-family: "Pathway Gothic One", sans-serif;
   background-color: black;
 }
 
@@ -384,10 +390,13 @@ body {
       -ms-flex-direction: column;
           flex-direction: column;
   width: 100%;
+  max-width: 390px;
   height: 100%;
   padding: 0 20px;
   color: aqua;
+  font-family: "Nanum Gothic", sans-serif;
   font-size: 26px;
+  text-shadow: 0px 0px 10px aqua;
   cursor: pointer;
 }
 .intro__first-screen--hide {
@@ -468,9 +477,13 @@ body {
   -webkit-animation-fill-mode: none;
           animation-fill-mode: none;
 }
-.intro__scroller h1 {
-  font-size: 55px;
+.intro__scroller h1, .intro__scroller h2 {
+  font-size: 45px;
   text-transform: uppercase;
+  letter-spacing: 6px;
+}
+.intro__scroller h2 {
+  font-size: 65px;
 }
 .intro__scroller p {
   font-size: 45px;

@@ -1,7 +1,7 @@
 {
   "background_color": "black",
   "description": "A Mix-And-Match game in Star Wars setting.",
-  "display": "fullscreen",
+  "display": "standalone",
   "icons": [
     {
       "src": "darth-vader-icon.png",

@@ -3844,11 +3844,12 @@ var charsArr = Object.entries({
 });
 
 var Game = /*#__PURE__*/function () {
-  function Game(content, cardsPerGame) {
+  function Game(content, cardsPerGame, cardsPerLevel) {
     _classCallCheck(this, Game);
 
     this.content = content;
     this.cardsPerGame = cardsPerGame;
+    this.cardsPerLevel = cardsPerLevel;
     this.audioController = new AudioController();
     this.introState = new IntroState(this);
     this.playState = new PlayState(this);
@@ -3918,9 +3919,9 @@ var Game = /*#__PURE__*/function () {
 
       document.documentElement.onselectstart = function () {
         return false;
-      };
+      }; //document.documentElement.addEventListener("dblclick", toggleFullScreen);
 
-      document.documentElement.addEventListener("dblclick", toggleFullScreen);
+
       this.intro.addEventListener("pointerup", function (e) {
         return _this.introState.start(e);
       }, {
@@ -3989,14 +3990,7 @@ var Game = /*#__PURE__*/function () {
 
         _this3.updateGameValue("timer");
 
-        if (_this3.timePoints < 0) {
-          setTimeout(function () {
-            _this3.timePoints = 0;
-
-            _this3.updateGameValue("timer");
-          }, 0);
-          clearInterval(_this3.timer);
-        }
+        if (_this3.timePoints === 0) clearInterval(_this3.timer);
       }, 1000);
     }
   }, {
@@ -4375,11 +4369,12 @@ var PlayState = /*#__PURE__*/function () {
     this.pointersObserver = new IntersectionObserver(function (rec) {
       return _this8._pointersVisibility(rec);
     }, {
-      rootMargin: "-50px 0px 0px 0px",
+      rootMargin: "-65px 0px -10px 0px",
       threshold: 0
     });
-    this.uniqCardsPerLevel = 2;
+    this.uniqCardsPerLevel = this.parent.cardsPerLevel;
     this.isCheckpoint = false;
+    this.endGameInitiated = false;
     this.pickedCard = null;
     this.hand = [];
     this.eventThrottle = false;
@@ -4485,11 +4480,13 @@ var PlayState = /*#__PURE__*/function () {
           if (this.parent.cards.length === 0) this._endGame("win");else this._startNewLevel();
           break;
 
-        case rec[0].attributeName === "data-time-left" && this.parent.game.dataset.timeLeft === "-1":
-          this.isCheckpoint = true;
+        case rec[0].attributeName === "data-time-left" && this.parent.game.dataset.timeLeft === "0":
+          this.endGameInitiated = setTimeout(function () {
+            console.log("endGameInitiated");
+            _this11.isCheckpoint = true;
 
-          this._endGame("lose");
-
+            _this11._endGame("lose");
+          }, 1000);
           break;
       }
     }
@@ -4628,6 +4625,11 @@ var PlayState = /*#__PURE__*/function () {
     key: "_cardsMatched",
     value: function _cardsMatched() {
       var _this13 = this;
+
+      if (this.endGameInitiated && this.parent.game.dataset.unmatchedCards === "2") {
+        clearTimeout(this.endGameInitiated);
+        this.endGameInitiated = false;
+      }
 
       return setTimeout(function () {
         _this13.parent.audioController.play(_this13.parent.audioController.matched);
@@ -4867,9 +4869,7 @@ var EndGame = /*#__PURE__*/function () {
         _this20.parent.game.dataset.timeLeft = "pending";
         _this20.parent.game.dataset.unmatchedCards = "pending";
 
-        _this20.parent.updateCardsDeck(); // this.parent.cards = this.parent.cachedCards.slice();
-        // this.parent.shuffle(this.parent.cards);
-
+        _this20.parent.updateCardsDeck();
 
         _this20.parent.clearPlayableField();
 
@@ -4901,7 +4901,6 @@ var EndGame = /*#__PURE__*/function () {
         _this21.parent.game.dataset.isActive = "true";
         _this21.parent.game.dataset.timeLeft = _this21.parent.timePoints;
         _this21.parent.game.dataset.unmatchedCards = "pending";
-        _this21.parent.isLocked = false;
       }, 1500);
       if (this.parent.lives === 0) e.target.classList.add("message__button--disabled");
     }
@@ -4923,7 +4922,7 @@ function toggleFullScreen() {
   }
 }
 
-var game = new Game(charsArr, 5);
+var game = new Game(charsArr, 10, 2);
 game.start();
 }();
 /******/ })()
