@@ -4363,6 +4363,7 @@ var PlayState = /*#__PURE__*/function () {
     this.statsField = document.querySelector(".game__stats");
     this.playableField = document.querySelector(".game__mainfield");
     this.pointers = document.querySelectorAll(".game__pointer");
+    this.lockScreen = document.querySelector(".lock");
     this.observer = new MutationObserver(function (rec) {
       return _this8._playStateChanges(rec);
     });
@@ -4482,7 +4483,6 @@ var PlayState = /*#__PURE__*/function () {
 
         case rec[0].attributeName === "data-time-left" && this.parent.game.dataset.timeLeft === "0":
           this.endGameInitiated = setTimeout(function () {
-            console.log("endGameInitiated");
             _this11.isCheckpoint = true;
 
             _this11._endGame("lose");
@@ -4517,6 +4517,7 @@ var PlayState = /*#__PURE__*/function () {
     value: function _upateGameStats() {
       var _this12 = this;
 
+      this.lockScreen.classList.toggle("lock--visible");
       var cardsOnTable = this.playableField.children.length;
       setTimeout(function () {
         if (_this12.isCheckpoint) _this12.isCheckpoint = false;
@@ -4526,6 +4527,8 @@ var PlayState = /*#__PURE__*/function () {
         _this12.pointersObserver.observe(_this12.playableField.children[0]);
 
         _this12.pointersObserver.observe(_this12.playableField.children[_this12.playableField.children.length - 1]);
+
+        _this12.lockScreen.classList.toggle("lock--visible");
       }, this.parent.timings.toShowCard * cardsOnTable);
       this.parent.game.dataset.unmatchedCards = cardsOnTable;
     }

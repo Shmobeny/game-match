@@ -26,10 +26,11 @@
     font-family: 'Nanum Gothic', sans-serif;
     font-size: 26px;
     text-shadow: 0px 0px 10px aqua;
-    cursor: pointer;
+    cursor: url("../img/interface/cursors/pointer.png"), pointer;
 
     &--hide {
       animation: opacity10 5s ease-in-out 0s 1 normal forwards;
+      cursor: url("../img/interface/cursors/standart.png"), default;
     }
   }
 
@@ -132,6 +133,8 @@
     background-color: black;
     overflow: hidden;
     opacity: 0;
+    
+    cursor: url("../img/interface/cursors/pointer.png"), pointer;
 
     &--show {
       opacity: 1;
@@ -155,7 +158,6 @@
       background-image: url("../img/interface/skip.svg");
       background-repeat: no-repeat;
       background-position: center right;
-
       animation: skipArrow 1s ease-in-out 0s infinite alternate forwards;
     }
 

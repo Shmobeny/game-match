@@ -515,6 +515,7 @@ class PlayState {
     this.statsField = document.querySelector(".game__stats");
     this.playableField = document.querySelector(".game__mainfield");
     this.pointers = document.querySelectorAll(".game__pointer");
+    this.lockScreen = document.querySelector(".lock");
 
     this.observer = new MutationObserver(rec => this._playStateChanges(rec));
     this.pointersObserver = new IntersectionObserver(rec => this._pointersVisibility(rec), {
@@ -634,7 +635,6 @@ class PlayState {
 
       case (rec[0].attributeName === "data-time-left" && this.parent.game.dataset.timeLeft === "0"):
         this.endGameInitiated = setTimeout(() => {
-          console.log("endGameInitiated")
           this.isCheckpoint = true;
           this._endGame("lose");
         }, 1000);
@@ -668,6 +668,8 @@ class PlayState {
   }
 
   _upateGameStats() {
+    this.lockScreen.classList.toggle("lock--visible");
+
     let cardsOnTable = this.playableField.children.length; 
 
     setTimeout(() => {
@@ -678,6 +680,8 @@ class PlayState {
 
       this.pointersObserver.observe(this.playableField.children[0]);
       this.pointersObserver.observe(this.playableField.children[this.playableField.children.length - 1]);
+
+      this.lockScreen.classList.toggle("lock--visible");
 
     }, this.parent.timings.toShowCard * cardsOnTable);
 
