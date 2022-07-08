@@ -3878,7 +3878,7 @@ var Game = /*#__PURE__*/function () {
     this.timer = null;
     this.timePoints = 30; //30
 
-    this.additionalTime = 20;
+    this.additionalTime = 25;
     this.initialTime = this.timePoints;
     this.checkpointTime = this.initialTime;
     this.lives = 2;
@@ -4038,8 +4038,8 @@ var Game = /*#__PURE__*/function () {
           newDIV.dataset.side = "back";
           newDIV.dataset.char = char[0];
         } else {
-          newDIV.append(arguments.length <= 3 ? undefined : arguments[3]);
-          body.append(newDIV);
+          newDIV.appendChild(arguments.length <= 3 ? undefined : arguments[3]);
+          body.appendChild(newDIV);
         }
 
         return newDIV;
@@ -4061,7 +4061,7 @@ var Game = /*#__PURE__*/function () {
         var star = document.createElement("div");
         star.classList.add("skybox__star");
         star.style.opacity = Math.random();
-        skybox.append(star);
+        skybox.appendChild(star);
         star.style.top = this.getRandomInt(0, 100) + "%";
         star.style.left = this.getRandomInt(0, 100) + "%";
       }
@@ -4452,10 +4452,10 @@ var PlayState = /*#__PURE__*/function () {
           this.parent.game.classList.add("game--active");
           this.statsField.classList.add("game--active");
           this.parent.skyboxGame.classList.add("game--active");
-          this.parent.game.before(this.statsField);
-          this.parent.game.before(this.parent.skyboxGame);
-          this.parent.game.after(this.pointers[0]);
-          this.parent.game.after(this.pointers[1]);
+          this.parent.game.insertAdjacentElement("beforebegin", this.statsField);
+          this.parent.game.insertAdjacentElement("beforebegin", this.parent.skyboxGame);
+          this.parent.game.insertAdjacentElement("afterend", this.pointers[0]);
+          this.parent.game.insertAdjacentElement("afterend", this.pointers[1]);
           this.parent.skyboxGame.classList.add("skybox--fixed");
           setTimeout(function () {
             if (_this11.isCheckpoint) {
@@ -4471,10 +4471,10 @@ var PlayState = /*#__PURE__*/function () {
         case rec[0].attributeName === "data-is-active" && this.parent.game.dataset.isActive === "false":
           this.parent.toOriginalCondition(document.documentElement, false, true);
           this.parent.toOriginalCondition(document.body, false, true);
-          this.parent.game.prepend(this.statsField);
-          this.parent.game.prepend(this.parent.skyboxGame);
-          this.parent.game.prepend(this.pointers[0]);
-          this.parent.game.prepend(this.pointers[1]);
+          this.parent.game.insertAdjacentElement("beforeend", this.statsField);
+          this.parent.game.insertAdjacentElement("beforeend", this.parent.skyboxGame);
+          this.parent.game.insertAdjacentElement("beforeend", this.pointers[0]);
+          this.parent.game.insertAdjacentElement("beforeend", this.pointers[1]);
           break;
 
         case rec[0].attributeName === "data-unmatched-cards" && this.parent.game.dataset.unmatchedCards === "0":
@@ -4497,9 +4497,9 @@ var PlayState = /*#__PURE__*/function () {
 
       for (var i = 0; i < amount; i++) {
         var newCard = this.parent.cards.pop();
-        target.append(newCard);
+        target.appendChild(newCard);
         var newCardClone = newCard.cloneNode(true);
-        target.append(newCardClone);
+        target.appendChild(newCardClone);
       }
 
       this._shuffleCards(target);
@@ -4556,7 +4556,7 @@ var PlayState = /*#__PURE__*/function () {
               var number = document.createElement("div");
               number.classList.add("card__number");
               number.textContent = i;
-              card.append(number);
+              card.appendChild(number);
               break;
           }
         }
@@ -4574,7 +4574,7 @@ var PlayState = /*#__PURE__*/function () {
 
       for (var i = newArr.length; i >= 0; i--) {
         var randomIndex = this.parent.getRandomInt(0, i);
-        target.append(newArr[randomIndex]);
+        target.appendChild(newArr[randomIndex]);
       }
     }
   }, {

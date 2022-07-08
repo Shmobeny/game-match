@@ -534,12 +534,13 @@ body {
   background-color: black;
   overflow: hidden;
   opacity: 0;
-  cursor: url("../img/interface/cursors/pointer.png"), pointer;
+  cursor: url("../img/interface/cursors/standart.png"), default;
 }
 .intro__skip--show {
   opacity: 1;
   -webkit-animation: opacity01 1s ease-in-out 0s 1 normal forwards;
           animation: opacity01 1s ease-in-out 0s 1 normal forwards;
+  cursor: url("../img/interface/cursors/pointer.png"), pointer;
 }
 .intro__skip--hide {
   -webkit-animation: opacity10 1s ease-in-out 0s 1 normal forwards;

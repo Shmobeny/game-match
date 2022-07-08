@@ -133,12 +133,12 @@
     background-color: black;
     overflow: hidden;
     opacity: 0;
-    
-    cursor: url("../img/interface/cursors/pointer.png"), pointer;
+    cursor: url("../img/interface/cursors/standart.png"), default;
 
     &--show {
       opacity: 1;
       animation: opacity01 1s ease-in-out 0s 1 normal forwards;
+      cursor: url("../img/interface/cursors/pointer.png"), pointer;
     }
 
     &--hide {

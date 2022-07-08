@@ -87,7 +87,7 @@ class Game {
 
     this.timer = null;
     this.timePoints = 30; //30
-    this.additionalTime = 20;
+    this.additionalTime = 25;
     this.initialTime = this.timePoints;
     this.checkpointTime = this.initialTime;
 
@@ -210,8 +210,8 @@ class Game {
         newDIV.dataset.side="back";
         newDIV.dataset.char = char[0];
       } else {
-        newDIV.append(part[0]);
-        body.append(newDIV);
+        newDIV.appendChild(part[0]);
+        body.appendChild(newDIV);
       }
 
       return newDIV;
@@ -234,7 +234,7 @@ class Game {
 
       star.style.opacity = Math.random();
   
-      skybox.append(star);
+      skybox.appendChild(star);
   
       star.style.top = this.getRandomInt(0, 100) + "%";
       star.style.left = this.getRandomInt(0, 100) + "%";
@@ -598,10 +598,10 @@ class PlayState {
         this.statsField.classList.add("game--active");
         this.parent.skyboxGame.classList.add("game--active");
 
-        this.parent.game.before(this.statsField);
-        this.parent.game.before(this.parent.skyboxGame);
-        this.parent.game.after(this.pointers[0]);
-        this.parent.game.after(this.pointers[1]);
+        this.parent.game.insertAdjacentElement("beforebegin", this.statsField);
+        this.parent.game.insertAdjacentElement("beforebegin", this.parent.skyboxGame);
+        this.parent.game.insertAdjacentElement("afterend", this.pointers[0]);
+        this.parent.game.insertAdjacentElement("afterend", this.pointers[1]);
         this.parent.skyboxGame.classList.add("skybox--fixed");
 
         setTimeout(() => {
@@ -622,10 +622,10 @@ class PlayState {
         this.parent.toOriginalCondition(document.documentElement, false, true);
         this.parent.toOriginalCondition(document.body, false, true);
       
-        this.parent.game.prepend(this.statsField);
-        this.parent.game.prepend(this.parent.skyboxGame);
-        this.parent.game.prepend(this.pointers[0]);
-        this.parent.game.prepend(this.pointers[1]);
+        this.parent.game.insertAdjacentElement("beforeend", this.statsField);
+        this.parent.game.insertAdjacentElement("beforeend", this.parent.skyboxGame);
+        this.parent.game.insertAdjacentElement("beforeend", this.pointers[0]);
+        this.parent.game.insertAdjacentElement("beforeend", this.pointers[1]);
         break;
       
       case (rec[0].attributeName === "data-unmatched-cards" && this.parent.game.dataset.unmatchedCards === "0"):
@@ -650,10 +650,10 @@ class PlayState {
     for (let i = 0; i < amount; i++) {
   
       let newCard = this.parent.cards.pop();
-      target.append(newCard);
+      target.appendChild(newCard);
 
       let newCardClone = newCard.cloneNode(true);
-      target.append(newCardClone);
+      target.appendChild(newCardClone);
     
     }
 
@@ -707,7 +707,7 @@ class PlayState {
           let number = document.createElement("div");
           number.classList.add("card__number");
           number.textContent = i;
-          card.append(number);
+          card.appendChild(number);
           break;
       }
       
@@ -722,7 +722,7 @@ class PlayState {
 
     for (let i = newArr.length; i >= 0; i--) {
       let randomIndex = this.parent.getRandomInt(0, i);
-      target.append(newArr[randomIndex]);
+      target.appendChild(newArr[randomIndex]);
     }
   }
 
