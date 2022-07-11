@@ -3845,6 +3845,8 @@ var charsArr = Object.entries({
 
 var Game = /*#__PURE__*/function () {
   function Game(content, cardsPerGame, cardsPerLevel) {
+    var _this = this;
+
     _classCallCheck(this, Game);
 
     this.content = content;
@@ -3883,12 +3885,15 @@ var Game = /*#__PURE__*/function () {
     this.checkpointTime = this.initialTime;
     this.lives = 2;
     this.initialLives = this.lives;
+    this.scrollBarObserver = new ResizeObserver(function (rec) {
+      return _this._checkScrollVisibility(false, rec);
+    });
   }
 
   _createClass(Game, [{
     key: "start",
     value: function start() {
-      var _this = this;
+      var _this2 = this;
 
       this._preloadCards();
 
@@ -3900,6 +3905,7 @@ var Game = /*#__PURE__*/function () {
         attributes: true,
         attributeFilter: ["data-is-active", "data-game-result"]
       });
+      this.scrollBarObserver.observe(document.body);
       this.updateGameValue("lives");
       this.counters.bonus.textContent = this.additionalTime;
 
@@ -3908,9 +3914,9 @@ var Game = /*#__PURE__*/function () {
       this._generateStars(100, this.game);
 
       window.onload = function (e) {
-        _this.isLocked = false;
+        _this2.isLocked = false;
 
-        _this.introState.removeLoader();
+        _this2.introState.removeLoader();
       };
 
       document.documentElement.ondragstart = function () {
@@ -3919,21 +3925,21 @@ var Game = /*#__PURE__*/function () {
 
       document.documentElement.onselectstart = function () {
         return false;
-      }; //document.documentElement.addEventListener("dblclick", toggleFullScreen);
+      };
 
-
+      document.documentElement.addEventListener("dblclick", toggleFullScreen);
       this.intro.addEventListener("pointerup", function (e) {
-        return _this.introState.start(e);
+        return _this2.introState.start(e);
       }, {
         passive: true
       });
       this.game.addEventListener("pointerup", function (e) {
-        return _this.playState.flipCard(e);
+        return _this2.playState.flipCard(e);
       }, {
         passive: true
       });
       this.messages.addEventListener("pointerup", function (e) {
-        return _this.endGame.action(e);
+        return _this2.endGame.action(e);
       }, {
         passive: true
       });
@@ -3949,7 +3955,7 @@ var Game = /*#__PURE__*/function () {
   }, {
     key: "updateGameValue",
     value: function updateGameValue(type) {
-      var _this2 = this;
+      var _this3 = this;
 
       var modify = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
@@ -3960,7 +3966,7 @@ var Game = /*#__PURE__*/function () {
             this.checkpointTime = this.timePoints;
             this.counters.timer.nextElementSibling.classList.add("multiplier--animate");
             setTimeout(function () {
-              _this2.counters.timer.nextElementSibling.classList.remove("multiplier--animate");
+              _this3.counters.timer.nextElementSibling.classList.remove("multiplier--animate");
             }, 1000);
           }
 
@@ -3982,15 +3988,15 @@ var Game = /*#__PURE__*/function () {
   }, {
     key: "startTimer",
     value: function startTimer() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.updateGameValue("timer");
       return setInterval(function () {
-        _this3.timePoints--;
+        _this4.timePoints--;
 
-        _this3.updateGameValue("timer");
+        _this4.updateGameValue("timer");
 
-        if (_this3.timePoints === 0) clearInterval(_this3.timer);
+        if (_this4.timePoints === 0) clearInterval(_this4.timer);
       }, 1000);
     }
   }, {
@@ -4100,6 +4106,25 @@ var Game = /*#__PURE__*/function () {
       min = Math.ceil(min);
       max = Math.floor(max);
       return Math.floor(Math.random() * (max - min)) + min;
+    }
+  }, {
+    key: "_checkScrollVisibility",
+    value: function _checkScrollVisibility(throttle, rec) {
+      var _this5 = this;
+
+      // let scrollerWidth = document.body.offsetWidth - document.body.clientWidth;
+      // document.querySelector(".scroll-bar-hidder").style.width = scrollerWidth + "px";
+      // this.playState.playableField.style.transform = "translateX(" + (scrollerWidth / 2) + "px)";
+      if (throttle) {
+        clearTimeout(throttle);
+        throttle = false;
+      }
+
+      throttle = setTimeout(function () {
+        var scrollerWidth = document.body.offsetWidth - document.body.clientWidth;
+        document.querySelector(".scroll-bar-hidder").style.width = scrollerWidth + "px";
+        _this5.playState.playableField.style.transform = "translateX(" + scrollerWidth / 2 + "px)";
+      }, 100);
     }
   }]);
 
@@ -4250,7 +4275,7 @@ var IntroState = /*#__PURE__*/function () {
   _createClass(IntroState, [{
     key: "start",
     value: function start(e) {
-      var _this4 = this;
+      var _this6 = this;
 
       if (this.parent.isLocked) return;
       if (!e.target.closest(".intro__first-screen")) return;
@@ -4258,7 +4283,7 @@ var IntroState = /*#__PURE__*/function () {
       this.skipButtonIsActive = true;
 
       this.skipButton.onpointerup = function (e) {
-        return _this4._skip(e);
+        return _this6._skip(e);
       };
 
       this.skipButton.classList.add("intro__skip--show");
@@ -4290,60 +4315,60 @@ var IntroState = /*#__PURE__*/function () {
   }, {
     key: "_iniciateLogoScreen",
     value: function _iniciateLogoScreen(delay) {
-      var _this5 = this;
+      var _this7 = this;
 
       return setTimeout(function () {
-        _this5.firstScreen.style.display = "none";
+        _this7.firstScreen.style.display = "none";
 
-        _this5.logoScreen.classList.add("intro__logo--animate");
+        _this7.logoScreen.classList.add("intro__logo--animate");
 
-        _this5.parent.audioController.play(_this5.parent.audioController.intro);
+        _this7.parent.audioController.play(_this7.parent.audioController.intro);
       }, delay);
     }
   }, {
     key: "_iniciateScrollerScreen",
     value: function _iniciateScrollerScreen(delay) {
-      var _this6 = this;
+      var _this8 = this;
 
       return setTimeout(function () {
-        _this6.logoScreen.classList.remove("intro__logo--animate");
+        _this8.logoScreen.classList.remove("intro__logo--animate");
 
-        _this6.logoScreen.style.display = "none";
-        _this6.scrollerScreen.style.display = "block";
+        _this8.logoScreen.style.display = "none";
+        _this8.scrollerScreen.style.display = "block";
       }, delay);
     }
   }, {
     key: "_iniciateGameScreen",
     value: function _iniciateGameScreen(delay) {
-      var _this7 = this;
+      var _this9 = this;
 
       return setTimeout(function () {
-        _this7.parent.intro.classList.add("intro--hide");
+        _this9.parent.intro.classList.add("intro--hide");
 
-        _this7.skipButton.classList.remove("intro__skip--show");
+        _this9.skipButton.classList.remove("intro__skip--show");
 
-        _this7.skipButton.classList.add("intro__skip--hide");
+        _this9.skipButton.classList.add("intro__skip--hide");
 
-        _this7.parent.audioController.stop(_this7.parent.audioController.intro, "soft", 500);
+        _this9.parent.audioController.stop(_this9.parent.audioController.intro, "soft", 500);
 
         setTimeout(function () {
           //document.documentElement.style.overflowY = "auto";
           //document.body.style.overflowY = "auto";
           setTimeout(function () {
-            _this7.parent.toOriginalCondition(_this7.skipButton);
+            _this9.parent.toOriginalCondition(_this9.skipButton);
 
-            _this7.parent.toOriginalCondition(_this7.parent.intro);
+            _this9.parent.toOriginalCondition(_this9.parent.intro);
 
-            _this7.parent.toOriginalCondition(_this7.firstScreen, true, true);
+            _this9.parent.toOriginalCondition(_this9.firstScreen, true, true);
 
-            _this7.parent.toOriginalCondition(_this7.firstScreen.lastElementChild, false, true);
+            _this9.parent.toOriginalCondition(_this9.firstScreen.lastElementChild, false, true);
 
-            _this7.parent.toOriginalCondition(_this7.logoScreen, true, true);
+            _this9.parent.toOriginalCondition(_this9.logoScreen, true, true);
 
-            _this7.parent.toOriginalCondition(_this7.scrollerScreen, false, true);
+            _this9.parent.toOriginalCondition(_this9.scrollerScreen, false, true);
 
-            _this7.parent.intro.style.display = "none";
-            _this7.parent.game.dataset.isActive = "true";
+            _this9.parent.intro.style.display = "none";
+            _this9.parent.game.dataset.isActive = "true";
           }, 1000);
         }, 5000);
       }, delay);
@@ -4355,7 +4380,7 @@ var IntroState = /*#__PURE__*/function () {
 
 var PlayState = /*#__PURE__*/function () {
   function PlayState(parent) {
-    var _this8 = this;
+    var _this10 = this;
 
     _classCallCheck(this, PlayState);
 
@@ -4365,10 +4390,10 @@ var PlayState = /*#__PURE__*/function () {
     this.pointers = document.querySelectorAll(".game__pointer");
     this.lockScreen = document.querySelector(".lock");
     this.observer = new MutationObserver(function (rec) {
-      return _this8._playStateChanges(rec);
+      return _this10._playStateChanges(rec);
     });
     this.pointersObserver = new IntersectionObserver(function (rec) {
-      return _this8._pointersVisibility(rec);
+      return _this10._pointersVisibility(rec);
     }, {
       rootMargin: "-65px 0px -10px 0px",
       threshold: 0
@@ -4387,7 +4412,7 @@ var PlayState = /*#__PURE__*/function () {
   _createClass(PlayState, [{
     key: "_hoverCard",
     value: function _hoverCard(e) {
-      var _this9 = this;
+      var _this11 = this;
 
       if (this.parent.isLocked) return;
       if (this.eventThrottle && e.type === "pointermove") return;
@@ -4402,7 +4427,7 @@ var PlayState = /*#__PURE__*/function () {
           e.target.closest(".card").classList.add("card--hovered");
           this.eventThrottle = true;
           setTimeout(function () {
-            return _this9.eventThrottle = false;
+            return _this11.eventThrottle = false;
           }, 1000);
           break;
 
@@ -4414,20 +4439,20 @@ var PlayState = /*#__PURE__*/function () {
   }, {
     key: "_pointersVisibility",
     value: function _pointersVisibility(rec) {
-      var _this10 = this;
+      var _this12 = this;
 
       rec.forEach(function (item) {
-        var index = Array.from(_this10.playableField.children).indexOf(item.target);
+        var index = Array.from(_this12.playableField.children).indexOf(item.target);
 
         if (index === 0) {
-          _this10.pointers[0].style.top = _this10.statsField.offsetHeight + "px";
-          if (!item.isIntersecting) _this10.pointers[0].classList.add("game__pointer--active");
-          if (item.isIntersecting) _this10.pointers[0].classList.remove("game__pointer--active");
+          _this12.pointers[0].style.top = _this12.statsField.offsetHeight + "px";
+          if (!item.isIntersecting) _this12.pointers[0].classList.add("game__pointer--active");
+          if (item.isIntersecting) _this12.pointers[0].classList.remove("game__pointer--active");
         }
 
         if (index > 0) {
-          if (!item.isIntersecting) _this10.pointers[1].classList.add("game__pointer--active");
-          if (item.isIntersecting) _this10.pointers[1].classList.remove("game__pointer--active");
+          if (!item.isIntersecting) _this12.pointers[1].classList.add("game__pointer--active");
+          if (item.isIntersecting) _this12.pointers[1].classList.remove("game__pointer--active");
         }
       });
     }
@@ -4442,7 +4467,7 @@ var PlayState = /*#__PURE__*/function () {
   }, {
     key: "_playStateChanges",
     value: function _playStateChanges(rec) {
-      var _this11 = this;
+      var _this13 = this;
 
       switch (true) {
         case rec[0].attributeName === "data-is-active" && this.parent.game.dataset.isActive === "true":
@@ -4458,12 +4483,12 @@ var PlayState = /*#__PURE__*/function () {
           this.parent.game.insertAdjacentElement("afterend", this.pointers[1]);
           this.parent.skyboxGame.classList.add("skybox--fixed");
           setTimeout(function () {
-            if (_this11.isCheckpoint) {
-              _this11._showCards(_this11.parent.timings.toShowCard);
+            if (_this13.isCheckpoint) {
+              _this13._showCards(_this13.parent.timings.toShowCard);
 
-              _this11._upateGameStats();
+              _this13._upateGameStats();
             } else {
-              _this11.generateCards(_this11.uniqCardsPerLevel, _this11.playableField);
+              _this13.generateCards(_this13.uniqCardsPerLevel, _this13.playableField);
             }
           }, this.parent.timings.toShowGameField);
           break;
@@ -4483,9 +4508,9 @@ var PlayState = /*#__PURE__*/function () {
 
         case rec[0].attributeName === "data-time-left" && this.parent.game.dataset.timeLeft === "0":
           this.endGameInitiated = setTimeout(function () {
-            _this11.isCheckpoint = true;
+            _this13.isCheckpoint = true;
 
-            _this11._endGame("lose");
+            _this13._endGame("lose");
           }, 1000);
           break;
       }
@@ -4515,20 +4540,20 @@ var PlayState = /*#__PURE__*/function () {
   }, {
     key: "_upateGameStats",
     value: function _upateGameStats() {
-      var _this12 = this;
+      var _this14 = this;
 
       this.lockScreen.classList.toggle("lock--visible");
       var cardsOnTable = this.playableField.children.length;
       setTimeout(function () {
-        if (_this12.isCheckpoint) _this12.isCheckpoint = false;
-        _this12.parent.isLocked = false;
-        _this12.parent.timer = _this12.parent.startTimer();
+        if (_this14.isCheckpoint) _this14.isCheckpoint = false;
+        _this14.parent.isLocked = false;
+        _this14.parent.timer = _this14.parent.startTimer();
 
-        _this12.pointersObserver.observe(_this12.playableField.children[0]);
+        _this14.pointersObserver.observe(_this14.playableField.children[0]);
 
-        _this12.pointersObserver.observe(_this12.playableField.children[_this12.playableField.children.length - 1]);
+        _this14.pointersObserver.observe(_this14.playableField.children[_this14.playableField.children.length - 1]);
 
-        _this12.lockScreen.classList.toggle("lock--visible");
+        _this14.lockScreen.classList.toggle("lock--visible");
       }, this.parent.timings.toShowCard * cardsOnTable);
       this.parent.game.dataset.unmatchedCards = cardsOnTable;
     }
@@ -4627,7 +4652,7 @@ var PlayState = /*#__PURE__*/function () {
   }, {
     key: "_cardsMatched",
     value: function _cardsMatched() {
-      var _this13 = this;
+      var _this15 = this;
 
       if (this.endGameInitiated && this.parent.game.dataset.unmatchedCards === "2") {
         clearTimeout(this.endGameInitiated);
@@ -4635,13 +4660,13 @@ var PlayState = /*#__PURE__*/function () {
       }
 
       return setTimeout(function () {
-        _this13.parent.audioController.play(_this13.parent.audioController.matched);
+        _this15.parent.audioController.play(_this15.parent.audioController.matched);
 
-        _this13.parent.isLocked = false;
+        _this15.parent.isLocked = false;
 
-        _this13._disableCards();
+        _this15._disableCards();
 
-        _this13.parent.game.dataset.unmatchedCards -= 2;
+        _this15.parent.game.dataset.unmatchedCards -= 2;
       }, this.parent.timings.toCheckMatch);
     }
   }, {
@@ -4656,7 +4681,7 @@ var PlayState = /*#__PURE__*/function () {
   }, {
     key: "_enableCards",
     value: function _enableCards() {
-      var _this14 = this;
+      var _this16 = this;
 
       this._flipCardsBack(".card--disabled");
 
@@ -4665,29 +4690,29 @@ var PlayState = /*#__PURE__*/function () {
         setTimeout(function () {
           item.classList.remove("card--appear");
           item.classList.add("card--disappear");
-        }, _this14.parent.timings.toFlipCard);
+        }, _this16.parent.timings.toFlipCard);
         setTimeout(function () {
           item.classList.remove("card--disappear");
-        }, _this14.parent.timings.toFlipCard + _this14.parent.timings.toFadeCard);
+        }, _this16.parent.timings.toFlipCard + _this16.parent.timings.toFadeCard);
       });
     }
   }, {
     key: "_cardsMismatched",
     value: function _cardsMismatched() {
-      var _this15 = this;
+      var _this17 = this;
 
       return setTimeout(function () {
-        _this15.parent.audioController.play(_this15.parent.audioController.unmatched);
+        _this17.parent.audioController.play(_this17.parent.audioController.unmatched);
 
-        _this15.parent.isLocked = false;
+        _this17.parent.isLocked = false;
 
-        _this15._flipCardsBack(".card--picked");
+        _this17._flipCardsBack(".card--picked");
       }, this.parent.timings.toCheckMatch);
     }
   }, {
     key: "_flipCardsBack",
     value: function _flipCardsBack(selector) {
-      var _this16 = this;
+      var _this18 = this;
 
       Array.from(document.querySelectorAll(selector)).forEach(function (item) {
         item.dataset.side = "back";
@@ -4709,13 +4734,13 @@ var PlayState = /*#__PURE__*/function () {
 
         setTimeout(function () {
           if (item.dataset.side === "back") item.classList.remove("card--picked");
-        }, _this16.parent.timings.toFlipCard);
+        }, _this18.parent.timings.toFlipCard);
       });
     }
   }, {
     key: "_startNewLevel",
     value: function _startNewLevel() {
-      var _this17 = this;
+      var _this19 = this;
 
       this.parent.isLocked = true;
       clearInterval(this.parent.timer);
@@ -4725,17 +4750,17 @@ var PlayState = /*#__PURE__*/function () {
       this._hidePointers();
 
       setTimeout(function () {
-        _this17.parent.updateGameValue("timer", true);
+        _this19.parent.updateGameValue("timer", true);
 
-        _this17.generateCards(_this17.uniqCardsPerLevel, _this17.playableField);
+        _this19.generateCards(_this19.uniqCardsPerLevel, _this19.playableField);
 
-        _this17.parent.game.scrollIntoView();
+        _this19.parent.game.scrollIntoView();
       }, this.parent.timings.toFlipCard + this.parent.timings.toFadeCard);
     }
   }, {
     key: "_endGame",
     value: function _endGame(result) {
-      var _this18 = this;
+      var _this20 = this;
 
       this.parent.isLocked = true;
       this.hand = [];
@@ -4752,39 +4777,39 @@ var PlayState = /*#__PURE__*/function () {
           item.classList.remove("card--disabled", "card--appear");
           item.classList.add("card--disappear");
           item.dataset.side = "back";
-        }, _this18.parent.timings.toFlipCard);
+        }, _this20.parent.timings.toFlipCard);
         setTimeout(function () {
           item.classList.remove("card--disappear");
-        }, _this18.parent.timings.toFlipCard + _this18.parent.timings.toFadeCard);
+        }, _this20.parent.timings.toFlipCard + _this20.parent.timings.toFadeCard);
       });
       setTimeout(function () {
-        _this18.parent.game.scrollIntoView();
+        _this20.parent.game.scrollIntoView();
 
-        _this18.parent.game.classList.remove("game--active");
+        _this20.parent.game.classList.remove("game--active");
 
-        _this18.statsField.classList.remove("game--active");
+        _this20.statsField.classList.remove("game--active");
 
-        _this18.parent.skyboxGame.classList.remove("game--active");
+        _this20.parent.skyboxGame.classList.remove("game--active");
 
-        _this18.parent.game.classList.add("game--hide");
+        _this20.parent.game.classList.add("game--hide");
 
-        _this18.statsField.classList.add("game--hide");
+        _this20.statsField.classList.add("game--hide");
 
-        _this18.parent.skyboxGame.classList.add("game--hide");
+        _this20.parent.skyboxGame.classList.add("game--hide");
       }, this.parent.timings.toFlipCard + this.parent.timings.toFadeCard);
       setTimeout(function () {
-        _this18.parent.game.dataset.isActive = "false";
+        _this20.parent.game.dataset.isActive = "false";
 
-        _this18.parent.toOriginalCondition(_this18.parent.game);
+        _this20.parent.toOriginalCondition(_this20.parent.game);
 
-        _this18.parent.toOriginalCondition(_this18.statsField);
+        _this20.parent.toOriginalCondition(_this20.statsField);
 
-        _this18.parent.toOriginalCondition(_this18.parent.skyboxGame);
+        _this20.parent.toOriginalCondition(_this20.parent.skyboxGame);
 
-        _this18.parent.isLocked = false;
-        _this18.parent.messages.dataset.isActive = "true";
+        _this20.parent.isLocked = false;
+        _this20.parent.messages.dataset.isActive = "true";
         setTimeout(function () {
-          return _this18.parent.messages.dataset.gameResult = result;
+          return _this20.parent.messages.dataset.gameResult = result;
         }, 0);
       }, this.parent.timings.toFadeCard + this.parent.timings.toFlipCard + this.parent.timings.toFadeGameField);
     }
@@ -4795,7 +4820,7 @@ var PlayState = /*#__PURE__*/function () {
 
 var EndGame = /*#__PURE__*/function () {
   function EndGame(parent) {
-    var _this19 = this;
+    var _this21 = this;
 
     _classCallCheck(this, EndGame);
 
@@ -4806,7 +4831,7 @@ var EndGame = /*#__PURE__*/function () {
     this.shadowMessageLose = this.messageLose.querySelector(".logo__shadow");
     this.continueButton = document.querySelector("[data-role=\"continue\"]");
     this.observer = new MutationObserver(function (rec) {
-      return _this19._messagesChanges(rec);
+      return _this21._messagesChanges(rec);
     });
   }
 
@@ -4849,44 +4874,44 @@ var EndGame = /*#__PURE__*/function () {
   }, {
     key: "_restart",
     value: function _restart(e) {
-      var _this20 = this;
+      var _this22 = this;
 
       this.parent.isLocked = true;
       var currentMessage = e.target.closest(".message");
       currentMessage.classList.add("message--hiding");
       setTimeout(function () {
-        _this20.parent.toOriginalCondition(currentMessage);
+        _this22.parent.toOriginalCondition(currentMessage);
 
-        _this20.parent.toOriginalCondition(_this20.shadowMessageVictory);
+        _this22.parent.toOriginalCondition(_this22.shadowMessageVictory);
 
-        _this20.parent.toOriginalCondition(_this20.shadowMessageLose);
+        _this22.parent.toOriginalCondition(_this22.shadowMessageLose);
 
-        _this20.parent.messages.dataset.isActive = "false";
-        _this20.parent.timePoints = _this20.parent.initialTime;
-        _this20.parent.lives = _this20.parent.initialLives;
+        _this22.parent.messages.dataset.isActive = "false";
+        _this22.parent.timePoints = _this22.parent.initialTime;
+        _this22.parent.lives = _this22.parent.initialLives;
 
-        _this20.parent.updateGameValue("lives");
+        _this22.parent.updateGameValue("lives");
 
-        _this20.parent.counters.timer.textContent = "--";
-        _this20.parent.counters.cardsInDeck.textContent = "--";
-        _this20.parent.game.dataset.timeLeft = "pending";
-        _this20.parent.game.dataset.unmatchedCards = "pending";
+        _this22.parent.counters.timer.textContent = "--";
+        _this22.parent.counters.cardsInDeck.textContent = "--";
+        _this22.parent.game.dataset.timeLeft = "pending";
+        _this22.parent.game.dataset.unmatchedCards = "pending";
 
-        _this20.parent.updateCardsDeck();
+        _this22.parent.updateCardsDeck();
 
-        _this20.parent.clearPlayableField();
+        _this22.parent.clearPlayableField();
 
-        _this20.parent.toOriginalCondition(_this20.continueButton);
+        _this22.parent.toOriginalCondition(_this22.continueButton);
 
-        _this20.parent.toOriginalCondition(_this20.parent.intro, false, true);
+        _this22.parent.toOriginalCondition(_this22.parent.intro, false, true);
 
-        _this20.parent.isLocked = false;
+        _this22.parent.isLocked = false;
       }, 1500);
     }
   }, {
     key: "_continue",
     value: function _continue(e) {
-      var _this21 = this;
+      var _this23 = this;
 
       if (e.target.classList.contains("message__button--disabled")) return;
       this.parent.isLocked = true;
@@ -4894,16 +4919,16 @@ var EndGame = /*#__PURE__*/function () {
       this.parent.updateGameValue("lives");
       this.messageLose.classList.add("message--hiding");
       setTimeout(function () {
-        _this21.parent.toOriginalCondition(_this21.messageLose);
+        _this23.parent.toOriginalCondition(_this23.messageLose);
 
-        _this21.parent.toOriginalCondition(_this21.shadowMessageLose);
+        _this23.parent.toOriginalCondition(_this23.shadowMessageLose);
 
-        _this21.parent.messages.dataset.isActive = "false";
-        _this21.parent.timePoints = _this21.parent.checkpointTime;
-        _this21.parent.counters.timer.textContent = "--";
-        _this21.parent.game.dataset.isActive = "true";
-        _this21.parent.game.dataset.timeLeft = _this21.parent.timePoints;
-        _this21.parent.game.dataset.unmatchedCards = "pending";
+        _this23.parent.messages.dataset.isActive = "false";
+        _this23.parent.timePoints = _this23.parent.checkpointTime;
+        _this23.parent.counters.timer.textContent = "--";
+        _this23.parent.game.dataset.isActive = "true";
+        _this23.parent.game.dataset.timeLeft = _this23.parent.timePoints;
+        _this23.parent.game.dataset.unmatchedCards = "pending";
       }, 1500);
       if (this.parent.lives === 0) e.target.classList.add("message__button--disabled");
     }
@@ -4911,19 +4936,6 @@ var EndGame = /*#__PURE__*/function () {
 
   return EndGame;
 }();
-
-function toggleFullScreen() {
-  var doc = window.document;
-  var docEl = doc.documentElement;
-  var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-  var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
-
-  if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
-    requestFullScreen.call(docEl);
-  } else {
-    cancelFullScreen.call(doc);
-  }
-}
 
 var game = new Game(charsArr, 10, 2);
 game.start();

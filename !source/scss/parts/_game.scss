@@ -104,11 +104,6 @@
   opacity: 0;
   z-index: 2;
 
-  // &[data-side="back"]:hover {
-  //   transform: perspective(1000px) rotateX(-9deg);
-  //   z-index: 4;
-  // }
-
   &--hovered {
     transform: perspective(1000px) rotateX(-10deg);
     z-index: 4;

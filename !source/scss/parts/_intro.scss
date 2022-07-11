@@ -94,10 +94,11 @@
     display: none;
     position: absolute;
     top: 100%;
+    left: 50%;
     width: 500px;
     color: #FFC500;
     text-align: center;
-    transform: rotateX(55deg);
+    transform: translateX(-50%) rotateX(55deg);
     animation-name: scrollerMove;
     animation-duration: 120s;
     animation-timing-function: linear;
@@ -147,8 +148,9 @@
     
     span {
       position: absolute;
+      top: 2.5px;
       left: 10px;
-      z-index: -1;
+      z-index: 0;
     }
 
     div {

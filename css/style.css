@@ -23,6 +23,17 @@ body {
   background-color: black;
 }
 
+.scroll-bar-hidder {
+  position: fixed;
+  top: 0;
+  left: 100%;
+  height: 100%;
+  background-color: black;
+  -webkit-transform: translateX(-100%);
+          transform: translateX(-100%);
+  z-index: 1;
+}
+
 .skybox {
   position: absolute;
   top: 0;
@@ -217,22 +228,22 @@ body {
 }
 @-webkit-keyframes scrollerMove {
   0% {
-    -webkit-transform: rotateX(55deg) translateY(0px);
-            transform: rotateX(55deg) translateY(0px);
+    -webkit-transform: translateX(-50%) rotateX(55deg) translateY(0px);
+            transform: translateX(-50%) rotateX(55deg) translateY(0px);
   }
   100% {
-    -webkit-transform: rotateX(55deg) translateY(-10000px);
-            transform: rotateX(55deg) translateY(-10000px);
+    -webkit-transform: translateX(-50%) rotateX(55deg) translateY(-10000px);
+            transform: translateX(-50%) rotateX(55deg) translateY(-10000px);
   }
 }
 @keyframes scrollerMove {
   0% {
-    -webkit-transform: rotateX(55deg) translateY(0px);
-            transform: rotateX(55deg) translateY(0px);
+    -webkit-transform: translateX(-50%) rotateX(55deg) translateY(0px);
+            transform: translateX(-50%) rotateX(55deg) translateY(0px);
   }
   100% {
-    -webkit-transform: rotateX(55deg) translateY(-10000px);
-            transform: rotateX(55deg) translateY(-10000px);
+    -webkit-transform: translateX(-50%) rotateX(55deg) translateY(-10000px);
+            transform: translateX(-50%) rotateX(55deg) translateY(-10000px);
   }
 }
 @-webkit-keyframes hideIntro {
@@ -487,11 +498,12 @@ body {
   display: none;
   position: absolute;
   top: 100%;
+  left: 50%;
   width: 500px;
   color: #FFC500;
   text-align: center;
-  -webkit-transform: rotateX(55deg);
-          transform: rotateX(55deg);
+  -webkit-transform: translateX(-50%) rotateX(55deg);
+          transform: translateX(-50%) rotateX(55deg);
   -webkit-animation-name: scrollerMove;
           animation-name: scrollerMove;
   -webkit-animation-duration: 120s;
@@ -548,8 +560,9 @@ body {
 }
 .intro__skip span {
   position: absolute;
+  top: 2.5px;
   left: 10px;
-  z-index: -1;
+  z-index: 0;
 }
 .intro__skip div {
   width: 40px;
@@ -912,6 +925,8 @@ body {
 }
 .message__logo .logo__content {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   background-position: center center;

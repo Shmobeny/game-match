@@ -94,6 +94,8 @@ class Game {
     this.lives = 2;
     this.initialLives = this.lives;
 
+    this.scrollBarObserver = new ResizeObserver(rec => this._checkScrollVisibility(false, rec))
+
   }
 
   start() {
@@ -109,6 +111,8 @@ class Game {
       attributeFilter: ["data-is-active", "data-game-result"],
     });
 
+    this.scrollBarObserver.observe(document.body);
+    
     this.updateGameValue("lives");
     this.counters.bonus.textContent = this.additionalTime;
 
@@ -123,7 +127,7 @@ class Game {
     document.documentElement.ondragstart = () => false;
     document.documentElement.onselectstart = () => false;
 
-    //document.documentElement.addEventListener("dblclick", toggleFullScreen);
+    document.documentElement.addEventListener("dblclick", toggleFullScreen);
 
     this.intro.addEventListener("pointerup", e => this.introState.start(e), {passive: true});
     this.game.addEventListener("pointerup", e => this.playState.flipCard(e), {passive: true});
@@ -274,6 +278,22 @@ class Game {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
+  _checkScrollVisibility(throttle, rec) {
+    // let scrollerWidth = document.body.offsetWidth - document.body.clientWidth;
+    // document.querySelector(".scroll-bar-hidder").style.width = scrollerWidth + "px";
+    // this.playState.playableField.style.transform = "translateX(" + (scrollerWidth / 2) + "px)";
+    
+    if (throttle) {
+      clearTimeout(throttle);
+      throttle = false;
+    }
+    
+    throttle = setTimeout(() => {
+      let scrollerWidth = document.body.offsetWidth - document.body.clientWidth;
+      document.querySelector(".scroll-bar-hidder").style.width = scrollerWidth + "px";
+      this.playState.playableField.style.transform = "translateX(" + (scrollerWidth / 2) + "px)";
+    }, 100);
+  }
 }
 
 class AudioController {
@@ -531,7 +551,6 @@ class PlayState {
     this.hand = [];
 
     this.eventThrottle = false;
-
     this.playableField.addEventListener("pointerover", this._hoverCard.bind(this));
     this.playableField.addEventListener("pointermove", this._hoverCard.bind(this));
     this.playableField.addEventListener("pointerout", this._hoverCard.bind(this));
@@ -1036,33 +1055,6 @@ class EndGame {
     if (this.parent.lives === 0) e.target.classList.add("message__button--disabled");
   }
 
-}
-
-function toggleFullScreen() {
-  var doc = window.document;
-  var docEl = doc.documentElement;
-
-  var requestFullScreen =
-    docEl.requestFullscreen ||
-    docEl.mozRequestFullScreen ||
-    docEl.webkitRequestFullScreen ||
-    docEl.msRequestFullscreen;
-  var cancelFullScreen =
-    doc.exitFullscreen ||
-    doc.mozCancelFullScreen ||
-    doc.webkitExitFullscreen ||
-    doc.msExitFullscreen;
-
-  if (
-    !doc.fullscreenElement &&
-    !doc.mozFullScreenElement &&
-    !doc.webkitFullscreenElement &&
-    !doc.msFullscreenElement
-  ) {
-    requestFullScreen.call(docEl);
-  } else {
-    cancelFullScreen.call(doc);
-  }
 }
 
 let game = new Game(charsArr, 10, 2);

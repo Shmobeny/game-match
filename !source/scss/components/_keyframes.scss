@@ -69,12 +69,12 @@
 
 @keyframes scrollerMove {
   0% {
-    transform: rotateX(55deg) translateY(0px);
+    transform: translateX(-50%) rotateX(55deg) translateY(0px);
 
   }
 
   100% {
-    transform: rotateX(55deg) translateY(-10000px);
+    transform: translateX(-50%) rotateX(55deg) translateY(-10000px);
   }
 }
 
