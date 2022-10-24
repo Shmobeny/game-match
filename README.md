@@ -1,7 +1,7 @@
 # Mix-and-Match: Start Wars
 Mix-and-Match game, based on **Star Wars** franchise!
 
-🎮 **[RUN GAME](https://shmobeny.github.io/game-match/ "Run game in your browser right now!")** 🎮
+🎮 **[RUN GAME](https://star-wars-gm.surge.sh/ "Run game in your browser right now!")** 🎮
 
 ![qrcode](https://raw.githubusercontent.com/Shmobeny/game-match/main/qrcode.png "Try game on your phone ;)")
 
