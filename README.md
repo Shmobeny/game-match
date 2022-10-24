@@ -12,5 +12,3 @@ Mix-and-Match game, based on **Star Wars** franchise!
 - **backwards support:** user can run this game even in old and rusty Internet Explorer 11
 
 ![Gameplay Screenshot](https://raw.githubusercontent.com/Shmobeny/game-match/main/gameplay_screenshot.png "Screenshot of gameplay :)")
-
-https://www.topps.com/
