@@ -6,6 +6,7 @@ Mix-and-Match game, based on **Star Wars** franchise!
 ## Features
 - **lots of cards:** game contains 44 cards with characters from original, prequel and sequel trilogy (all rights belongs to **[TOPPS](https://www.topps.com/)**)
 - **replayability:** every run, game will randomly select 20 cards to play with
+- **right to make a mistake:** player have 2 continues to start game from last level.
 - **installable:** user can install game on any modern device and play this game offline (wip)
 - **authentic sound:** all sound effects imported directly from the movies
 - **randomly generated skybox:** skybox is uniq for every game run
