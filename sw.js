@@ -99,7 +99,7 @@ self.addEventListener("install", e => {
       .catch(err => console.log("Error during caching", err))
   );
 });
-//
+
 // service worker activation event 
 self.addEventListener("activate", e => {
   //console.log("Service Worker has been activated", e);
